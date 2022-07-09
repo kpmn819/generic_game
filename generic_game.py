@@ -54,7 +54,11 @@ class Game():
             # now let's get the list of the answers
             for x in range(self.num_ans):
                 self.a_thisgame.append(self.qu_ans[q][x + 1])
-                    
+        # make a temp list to group the answers per question
+        temp_list = []
+        for i in range(0, len(self.a_thisgame), num_ans):
+            temp_list.append(self.a_thisgame[i:i+num_ans])
+        self.a_thisgame = temp_list # all cleaned up and ready
         # leaving here our Game has the questions and answers a passed in score of (0,0)
         # and a background
     # ============= end of Game class initialization ================   
@@ -191,11 +195,13 @@ def get_file(list_file, col_count):
         
 
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
-MASTER_TIMEOUT = 300
-#@timeout_decorator.timeout(MASTER_TIMEOUT,use_signals=True)
+
+#////////////////// START METHODS /////////////////////////
+
 def choose_game():
     print('1= dolphin, 2= Bonehenge, 3= humpback')
-    game_to_play = input('A number please  ')
+    #game_to_play = input('A number please  ')
+    game_to_play = '1'
     global dolphin
     global bonehenge
     if game_to_play == '1':
@@ -214,7 +220,7 @@ def game_loop():
     dolphin.take_turn()
     print('took a turn')    
 
-    
+#\\\\\\\\\\\\\\\\\\\\\\ END METHODS \\\\\\\\\\\\\\\\\\\\\\\\
 
 
 
@@ -222,10 +228,8 @@ def game_loop():
 def main():
     try:
         init()
-        global dolphin # so it can be seen everywhere
-        global bonehenge
-        global humpback
-        global another_game
+    
+        global curr_game
     
         home_screen = Screen('nice picture.jpeg', 'Welcome to the game')
         print(home_screen.fs_text) 
@@ -236,26 +240,15 @@ def main():
         # this little construct will see if the game exists already
         # if it does delete it and make another this is for the loop 
         try:
-            dolphin
+            curr_game
         except NameError:
                 print('no dolphin defined')
         else:
             del dolphin
         
-        choose_game()
+        game_loop()
 
-        ''' BASIC PROGRAM
-        init() initialize variables, screen settings and setup ports
-        LOOP START
-        Show home screen
-        Show game selection if any
-        Show donation screen if any
-        Enter game loop w/timeout
-        Show final score award prize if any
         
-         LOOP END '''   
-
-
     except KeyboardInterrupt:
         #cleanup at end of program
         print('   Shutdown')
