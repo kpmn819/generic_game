@@ -10,6 +10,7 @@ from random import randrange, shuffle, random, sample
 #from random import sample
 from time import sleep, time
 import sys, pygame, os
+from tkinter import FALSE
 #from xml.dom import WrongDocumentErr
 #from xml.etree.ElementTree import QName
 from pygame.locals import *
@@ -77,16 +78,20 @@ class Port():
     def __init__(self, p_num, input, state= None):
         self.p_num = p_num
         self.input = input
-        self.state = state
+  
         # need to setup gpio port here
         if self.input:
             print('Port ' + str(self.p_num) + ' is an input')
             if os.name != 'nt':
                 GPIO.setup(p_num, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+            else:
+                print('input port not set')
         else:
             print('Port ' + str(self.p_num) + ' is an output')
             if os.name != 'nt':
                 GPIO.setup(p_num, GPIO.OUT)
+            else:
+                print('output port not set')
     def change_state(self):
         if not self.input:
             if self.state:
@@ -118,10 +123,21 @@ class Screen():
 
 # \\\\\\\\\\\\\\\\\\\\ END CLASSES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 def init():
-    # set up the ports
-    light_1 = Port(14, False, True)
-    light_2 = Port(15, False, True)
-    butn_1 = Port(23, True, False)
+    # set up the ports port#, input, state (optional)
+    light_1 = Port(24, False, True)
+    light_2 = Port(25, False, True)
+    light_3 = Port(12, False, False)
+    light_4 = Port(18, False, False)
+    light_5 = Port(14, False, False)
+    light_fp = Port(16,False, False)
+
+    butn_1 = Port(4, True, False)
+    butn_2 = Port(17, True, False)
+    butn_3 = Port(27, True, False)
+    butn_4 = Port(22, True, False)
+    butn_5 = Port(5, True, False)
+    butn_free = Port(13, True, False)
+    butn_pay = Port(26, True, False)
  
     pygame.init()
     pygame.mixer.init()
@@ -197,27 +213,37 @@ def get_file(list_file, col_count):
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #////////////////// START METHODS /////////////////////////
-
+# CHOOSE GAME ------
 def choose_game():
+    global curr_game
     print('1= dolphin, 2= Bonehenge, 3= humpback')
     #game_to_play = input('A number please  ')
     game_to_play = '1'
-    global dolphin
-    global bonehenge
+    # make the game object and call it curr_game
     if game_to_play == '1':
-        dolphin = Game('water.jpeg', picture, (0,0), 5)
+        curr_game = Game('water.jpeg', picture, (0,0), 5)
         print('dolphin selected')
     if game_to_play == '2':
-        bonehenge = Game('bonehenge.jpeg', qna, (0,0), 3)
+        curr_game = Game('bonehenge.jpeg', qna, (0,0), 3)
     print('This is dolphin.q_thisgame')
-    print(dolphin.q_thisgame)
+    print(curr_game.q_thisgame)
     print('these are the answers')
-    print(dolphin.a_thisgame)
+    print(curr_game.a_thisgame)
 
+def pay_free():
+    # put up screen
+    # change lights
 
+    pass
+# GAME LOOP -------
 def game_loop():
-    global dolphin
-    dolphin.take_turn()
+    choose_game()
+    # game must be created first
+    global curr_game
+    pay_free()
+
+
+    curr_game.take_turn()
     print('took a turn')    
 
 #\\\\\\\\\\\\\\\\\\\\\\ END METHODS \\\\\\\\\\\\\\\\\\\\\\\\
@@ -231,14 +257,6 @@ def main():
     
         global curr_game
     
-        home_screen = Screen('nice picture.jpeg', 'Welcome to the game')
-        print(home_screen.fs_text) 
-        #print(qna)
-        #print(len(qna))
-        #print(qna[1])
-        #print(qna[1][0])
-        # this little construct will see if the game exists already
-        # if it does delete it and make another this is for the loop 
         try:
             curr_game
         except NameError:
