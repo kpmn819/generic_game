@@ -54,6 +54,7 @@ class Game():
             # now let's get the list of the answers
             for x in range(self.num_ans):
                 self.a_thisgame.append(self.qu_ans[q][x + 1])
+                    
         # leaving here our Game has the questions and answers a passed in score of (0,0)
         # and a background
     # ============= end of Game class initialization ================   
@@ -136,7 +137,7 @@ def init():
     global blue
     blue = (0, 0, 255)
     # for autostart to work properly uncomment the line below
-    display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+    #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     #display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
 
@@ -192,14 +193,27 @@ def get_file(list_file, col_count):
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
 MASTER_TIMEOUT = 300
 #@timeout_decorator.timeout(MASTER_TIMEOUT,use_signals=True)
-def game_loop():
+def choose_game():
+    print('1= dolphin, 2= Bonehenge, 3= humpback')
+    game_to_play = input('A number please  ')
     global dolphin
-    dolphin.take_turn()
-    print('took a turn')    
+    global bonehenge
+    if game_to_play == '1':
+        dolphin = Game('water.jpeg', picture, (0,0), 5)
+        print('dolphin selected')
+    if game_to_play == '2':
+        bonehenge = Game('bonehenge.jpeg', qna, (0,0), 3)
     print('This is dolphin.q_thisgame')
     print(dolphin.q_thisgame)
     print('these are the answers')
     print(dolphin.a_thisgame)
+
+
+def game_loop():
+    global dolphin
+    dolphin.take_turn()
+    print('took a turn')    
+
     
 
 
@@ -227,12 +241,8 @@ def main():
                 print('no dolphin defined')
         else:
             del dolphin
-        dolphin = Game('water.jpeg', picture, (0,0), 5)
-        #print(dolphin.qu_ans)
-    
-     
-        #print(dolphin.just_a)
-        game_loop()
+        
+        choose_game()
 
         ''' BASIC PROGRAM
         init() initialize variables, screen settings and setup ports
