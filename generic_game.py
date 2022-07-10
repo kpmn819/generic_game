@@ -124,19 +124,25 @@ class Port():
 
 
 # !!!!!!!!!!!!!
-class Screen():
-    def __init__(self, background, fs_text= None, questions= None, 
-                 answers= None,  score= None, arrows= None, highlights= None):
+class ScreenObject():
+    def __init__(self, location):
         
-        self.questions = questions
-        self.fs_text = fs_text
-        self.answers = answers
-        self.background = background
-        self.score = score
-        self.arrows = arrows
-        self.highlights = highlights
-      
+        self.location = location
+        
+class TextObject(ScreenObject):
+    def __init__(self, text, location, size, color, width=None, font=None):
+        self.text = text
+        self.font = font
+        self.size = size
+        self.color = color
+        self.width = width
+        super().__init__(location)
 
+    def parse_string(self, text, width):    
+        # this handy util breaks up long lines for us
+        lines_list = textwrap.wrap(text, width)        
+	# will return any number of lines of final_length
+        return lines_list 
 # \\\\\\\\\\\\\\\\\\\\ END CLASSES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 def init():
     # set up the ports port#, input T/F, state T/F (optional)
@@ -242,10 +248,10 @@ def choose_game():
         print('dolphin selected')
     if game_to_play == '2':
         curr_game = Game('bonehenge.jpeg', qna, (0,0), 3)
-    print('Here are the questions for curr_game')
+    '''print('Here are the questions for curr_game')
     print(curr_game.q_thisgame)
     print('And the answers')
-    print(curr_game.a_thisgame)
+    print(curr_game.a_thisgame)'''
 
 def pay_free():
     # put up screen
@@ -272,16 +278,19 @@ def game_loop():
 def main():
     try:
         init()
-        got = gu.something('here we are')
-        print(got)
+        stuff ='here is a really long line that will have to be compressed by our formatter'
+        zow = TextObject(stuff, (200,300), 50, red)
+        print(zow.color)
+        zow.text =TextObject.parse_string(zow, stuff, 10)
+        print(zow.text)
         global curr_game
     
         try:
             curr_game
         except NameError:
-                print('no dolphin defined')
+                print('no curr_game defined')
         else:
-            del dolphin
+            del curr_game
         
         game_loop()
 
