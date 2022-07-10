@@ -2,7 +2,7 @@
 
 # IMPORTS START --------------------------------------------------
 # makes extensive use of pygame to blit the screen
-
+import game_util as gu
 from genericpath import exists
 from http.client import PROXY_AUTHENTICATION_REQUIRED
 from lib2to3.pgen2.token import NUMBER
@@ -272,7 +272,8 @@ def game_loop():
 def main():
     try:
         init()
-    
+        got = gu.something('here we are')
+        print(got)
         global curr_game
     
         try:
