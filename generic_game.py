@@ -140,12 +140,15 @@ class TextObject(ScreenObject):
 
     def parse_string(self, text, width):    
         # this handy util breaks up long lines for us
+
         lines_list = textwrap.wrap(text, width)        
 	# will return any number of lines of final_length
         return lines_list 
     #----------- font process
     def font_process(self, text, location, size, color):
         global display
+        x = location[0]
+        y = location[1]
         # attempt to combine all font operations into one call that
         # renders and blits the text
         black = (0,0,0)
@@ -154,6 +157,7 @@ class TextObject(ScreenObject):
         font = pygame.font.SysFont('FreeSans', size, True, False)
         # render font on a new surface font.render(text, antialias, bkgnd = none)
         render_message = font.render(text, True, color)
+        
         # render drop shadow in black
         if d_shadow:
             render_ds = font.render(text, True, black)
@@ -175,6 +179,10 @@ class TextObject(ScreenObject):
 # \\\\\\\\\\\\\\\\\\\\ END CLASSES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 def init():
     # set up the ports port#, input T/F, state T/F (optional)
+    global image_centerx
+    global image_centery
+    image_centerx = 960
+    image_centery = 540
     light_1 = Port(24, False, True)
     light_2 = Port(25, False, True)
     light_3 = Port(12, False, False)
@@ -210,10 +218,100 @@ def init():
     blue = (0, 0, 255)
     # for autostart to work properly uncomment the line below
     #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+    global display
     display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
-    path = 'graphics/'
-    gu.setup_av(path)
+    gpath = 'graphics/'
+    udol1 = gpath + '25b.jpg'
+    udol2 = gpath + '26b.jpg'
+    udol3 = gpath + '75a.jpg'
+    udol4 = gpath + '86a.jpg'
+    udol5 = gpath + '100b.jpg'
+    udol6 = gpath + '126b.jpg'
+
+    udol7 = gpath + '271c.jpg'
+    udol8 = gpath + '454b.jpg'
+    udol9 = gpath + '618a.jpg'
+    udol10 = gpath + '706b.jpg'
+    udol11 = gpath + '1142b.jpg'
+    udol12 = gpath + '1726a.jpg'
+
+    # now set pointers to computer picks
+    cdol1 = gpath + '25a.jpg'
+    cdol2 = gpath + '26a.jpg'
+    cdol3 = gpath + '75b.jpg'
+    cdol4 = gpath + '86c.jpg'
+    cdol5 = gpath + '100a.jpg'
+    cdol6 = gpath + '126a.jpg'
+
+    cdol7 = gpath + '271b.jpg'
+    cdol8 = gpath + '454a.jpg'
+    cdol9 = gpath + '618b.jpg'
+    cdol10 = gpath + '706a.jpg'
+    cdol11 = gpath + '1142a.jpg'
+    cdol12 = gpath + '1726b.jpg'
+
+    g1_open_pict = gpath + 'game_1.jpg'
+    g2_open_pict = gpath + 'game_2.jpg'
+    #free_donate_pict = gpath + 'free_donate.jpg' #(not used)
+    game_choice_pict = gpath + 'game_choice.jpg'
+    finalscore_pict = gpath + 'finalscore.jpg'
+    # arrows
+    r_arro = gpath + 'red_arrow.png'
+    y_arro = gpath + 'yellow_arrow.png'
+    b_arro = gpath + 'blue_arrow.png'
+    # glows
+    g_gl = gpath + 'g-glow.png'
+    r_gl = gpath + 'r-glow.png'
+    gr_gl = gpath + 'gray-glow.png'
+    # path to sounds
+    awefile = gpath + 'Awe.mp3'
+    yayfile = gpath + 'Yay.mp3'
+    # audio files for final score
+    # had to convert a couple to mp3, pygame didn't like the wav version
+    final_audio = ('0_right.wav','1_right.wav','2_right.mp3','3_right.wav',
+                '4_right.mp3','5_right.wav')
+    final_vol = (.3,1,1,.5,1,1)
+    # now to actually load them same letters this has to be done in two steps
+    # first the user pictures
+    uw1 = pygame.image.load(udol1).convert_alpha()
+    uw2 = pygame.image.load(udol2).convert_alpha()
+    uw3 = pygame.image.load(udol3).convert_alpha()
+    uw4 = pygame.image.load(udol4).convert_alpha()
+    uw5 = pygame.image.load(udol5).convert_alpha()
+    uw6 = pygame.image.load(udol6).convert_alpha()
+    uw7 = pygame.image.load(udol7).convert_alpha()
+    uw8 = pygame.image.load(udol8).convert_alpha()
+    uw9 = pygame.image.load(udol9).convert_alpha()
+    uw10 = pygame.image.load(udol10).convert_alpha()
+    uw11 = pygame.image.load(udol11).convert_alpha()
+    uw12 = pygame.image.load(udol12).convert_alpha()
+    # now the computer pictures
+    cw1 = pygame.image.load(cdol1).convert_alpha()
+    cw2 = pygame.image.load(cdol2).convert_alpha()
+    cw3 = pygame.image.load(cdol3).convert_alpha()
+    cw4 = pygame.image.load(cdol4).convert_alpha()
+    cw5 = pygame.image.load(cdol5).convert_alpha()
+    cw6 = pygame.image.load(cdol6).convert_alpha()
+    cw7 = pygame.image.load(cdol7).convert_alpha()
+    cw8 = pygame.image.load(cdol8).convert_alpha()
+    cw9 = pygame.image.load(cdol9).convert_alpha()
+    cw10 = pygame.image.load(cdol10).convert_alpha()
+    cw11 = pygame.image.load(cdol11).convert_alpha()
+    cw12 = pygame.image.load(cdol12).convert_alpha()
+    # full 1920 x 1080 images for backgrounds
+    g1_bkg = pygame.image.load(g1_open_pict).convert_alpha()
+    g2_bkg = pygame.image.load(g2_open_pict).convert_alpha()
+    #free_donate = pygame.image.load(free_donate_pict).convert_alpha() # not used
+    global game_choice
+    game_choice = pygame.image.load(game_choice_pict).convert_alpha()
+    finalscore = pygame.image.load(finalscore_pict).convert_alpha()
+    # small arrow with alpha
+    blue_arrow = pygame.image.load(b_arro).convert_alpha()
+
+    green_glow = pygame.image.load(g_gl).convert_alpha()
+    red_glow = pygame.image.load(r_gl).convert_alpha()
+    gray_glow = pygame.image.load(gr_gl).convert_alpha()
     # set path name to graphics and sound files here ///////
 
     # make picture files objects for pygame here ////////
@@ -282,19 +380,73 @@ def choose_game():
     print(curr_game.q_thisgame)
     print('And the answers')
     print(curr_game.a_thisgame)'''
+    return curr_game
 
-def pay_free():
-    # put up screen
-    # change lights
-    pass
-
+def free_cash(picture):
+    ''' called by both games selects if it is a free game or
+    if they put in some money sets global variables'''
+    # display rules and wait for input
+    global free
+    global win
+    global display
+     
+    display.blit(picture, (0, 0))
+    greeting = 'Press Free Play'
+    #create the object firs
+    greet = TextObject(greeting, (image_centerx, 200), 60, white )
+    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    greeting = 'or'
+    greet = TextObject('or',(image_centerx, 280), 60, white)
+    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    greeting = 'Make a Donation and get a chance to win a Bonehenge Prize'
+    greet = TextObject(greeting, (image_centerx, 360), 60, white )
+    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    greeting = 'Prizes are awarded for 5 of 5 or 4 of 5 correct answers'
+    greet = TextObject(greeting, (image_centerx,800), 30, white )
+    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    greeting = 'If you win you will see your winner code word'
+    greet = TextObject(greeting, (image_centerx,850), 30, white )
+    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    pygame.display.flip()
+    
+    # Select if this is a paid or free play
+    # forever loop until timeout_decorator kicks in
+    while True:
+        sleep(.05)
+        x = input('THIS IS WHERE THE LOOP GOES')
+        #print('in pay detection')
+        '''if GPIO.input(portList2[1]) == GPIO.LOW:
+            sleep(.08)
+            free = True
+            win = False
+            print('Free Play')
+            break
+                
+        if GPIO.input(portList2[2]) == GPIO.LOW:
+            #print('PLAYBACK SHOULD HAPPEN')
+            sleep(.08)
+            free = False
+            win = False # set it false for now
+            Rnd_Chance = int(random() * 100 )
+            play_sound('Yay.mp3', .3)
+            
+            
+            if Rnd_Chance <= payout:
+                win = True
+                print('A Winner')
+                
+            else:
+                win = False
+                print('A Loser')
+            break'''
     
 # GAME LOOP -------
 def game_loop():
-    choose_game()
+    
     # game must be created first
     global curr_game
-    pay_free()
+    free_cash(game_choice)
+    curr_game = choose_game()
 
 
     curr_game.take_turn()
