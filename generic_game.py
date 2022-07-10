@@ -143,6 +143,35 @@ class TextObject(ScreenObject):
         lines_list = textwrap.wrap(text, width)        
 	# will return any number of lines of final_length
         return lines_list 
+    #----------- font process
+    def font_process(self, text, location, size, color):
+        global display
+        # attempt to combine all font operations into one call that
+        # renders and blits the text
+        black = (0,0,0)
+        d_shadow = 3
+        # create a font object from a system font
+        font = pygame.font.SysFont('FreeSans', size, True, False)
+        # render font on a new surface font.render(text, antialias, bkgnd = none)
+        render_message = font.render(text, True, color)
+        # render drop shadow in black
+        if d_shadow:
+            render_ds = font.render(text, True, black)
+            render_ds_rect = render_message.get_rect()
+        # attempt to center works
+        # create a rectangular object for the text surface object
+        render_msg_rect = render_message.get_rect()
+        
+        # center in x, use y from call
+        #render_msg_rect.center = (image_centerx, y) # (x,y) x = screen center
+        render_msg_rect.center = location # (x,y) x = screen center
+        # blit drop shadow then text to image
+        if d_shadow:
+            #render_ds_rect.center = (image_centerx + d_shadow, y + d_shadow)
+            render_ds_rect.center = (x + d_shadow, y + d_shadow)
+            display.blit(render_ds, render_ds_rect)
+        display.blit(render_message, render_msg_rect)
+        # no flip here up to the caller
 # \\\\\\\\\\\\\\\\\\\\ END CLASSES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 def init():
     # set up the ports port#, input T/F, state T/F (optional)
@@ -181,9 +210,10 @@ def init():
     blue = (0, 0, 255)
     # for autostart to work properly uncomment the line below
     #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-    #display = pygame.display.set_mode((1920,1080))
+    display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
-
+    path = 'graphics/'
+    gu.setup_av(path)
     # set path name to graphics and sound files here ///////
 
     # make picture files objects for pygame here ////////
