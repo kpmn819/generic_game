@@ -34,7 +34,8 @@ import timeout_decorator
 
 # \\\\\\\\\\\\\\\\\ END VARIABLES AND CONSTANTS \\\\\\\\\\\\\\\\\\\\\\\\
 
-# //////////////////  CLASSES ////////////////////////////////////////////
+# //////////////////  CLASSES ///////////////////////////////////////////
+# !!!!!!!!!!!
 class Game():
     def __init__(self, background, qu_ans, score, num_ans, reward= None):
         self.background = background
@@ -64,16 +65,12 @@ class Game():
         # and a background
     # ============= end of Game class initialization ================   
 
-        
     def take_turn(self):
-        pass    
-        
+        pass       
+    
+ # ============ end of Game class methods ===============       
             
-            
-
-        
-
-
+# !!!!!!!!!!!!
 class Port():
     def __init__(self, p_num, input, state= None):
         self.p_num = p_num
@@ -81,23 +78,33 @@ class Port():
   
         # need to setup gpio port here
         if self.input:
-            print('Port ' + str(self.p_num) + ' is an input')
             if os.name != 'nt':
                 GPIO.setup(p_num, GPIO.IN, pull_up_down = GPIO.PUD_UP)
             else:
-                print('input port not set')
+                #print('input port not set')
+                pass
         else:
-            print('Port ' + str(self.p_num) + ' is an output')
             if os.name != 'nt':
                 GPIO.setup(p_num, GPIO.OUT)
             else:
-                print('output port not set')
+                #print('output port not set')
+                pass
     def change_state(self):
         if not self.input:
             if self.state:
                 self.state = False
             else:
                 self.state = True
+        else:
+            pass
+    def out_high(self):
+        if not self.input:
+            self.state = True
+        else:
+            pass
+    def out_low(self):
+        if not self.input:
+            self.state = False
         else:
             pass
     def read_state(self):
@@ -107,7 +114,16 @@ class Port():
             return self.state
         else:
             pass
+    def change_config(config):
+        if config == 'free_and_pay':
+            pass
+        if config == 'five_on':
+            pass
+        if config == 'three_on':
+            pass
 
+
+# !!!!!!!!!!!!!
 class Screen():
     def __init__(self, background, fs_text= None, questions= None, 
                  answers= None,  score= None, arrows= None, highlights= None):
@@ -119,11 +135,11 @@ class Screen():
         self.score = score
         self.arrows = arrows
         self.highlights = highlights
-        
+      
 
 # \\\\\\\\\\\\\\\\\\\\ END CLASSES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 def init():
-    # set up the ports port#, input, state (optional)
+    # set up the ports port#, input T/F, state T/F (optional)
     light_1 = Port(24, False, True)
     light_2 = Port(25, False, True)
     light_3 = Port(12, False, False)
@@ -138,6 +154,7 @@ def init():
     butn_5 = Port(5, True, False)
     butn_free = Port(13, True, False)
     butn_pay = Port(26, True, False)
+    
  
     pygame.init()
     pygame.mixer.init()
@@ -225,16 +242,17 @@ def choose_game():
         print('dolphin selected')
     if game_to_play == '2':
         curr_game = Game('bonehenge.jpeg', qna, (0,0), 3)
-    print('This is dolphin.q_thisgame')
+    print('Here are the questions for curr_game')
     print(curr_game.q_thisgame)
-    print('these are the answers')
+    print('And the answers')
     print(curr_game.a_thisgame)
 
 def pay_free():
     # put up screen
     # change lights
-
     pass
+
+    
 # GAME LOOP -------
 def game_loop():
     choose_game()
