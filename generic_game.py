@@ -37,7 +37,7 @@ import timeout_decorator
 
 # //////////////////  CLASSES ///////////////////////////////////////////
 # !!!!!!!!!!!
-class Game():
+class TextGame():
     def __init__(self, background, qu_ans, score, num_ans, reward= None):
         self.background = background
         self.qu_ans = qu_ans # all of the questions and answers
@@ -69,7 +69,15 @@ class Game():
     def take_turn(self):
         pass       
     
- # ============ end of Game class methods ===============       
+ # ============ end of Game class methods =============== 
+ # ============ start PictGame class =========================
+class PictGame():
+    def __init__(self, background, matches, score, reward= None): 
+        self.background = background
+        self.matches = matches # a list of tuples
+        self.score = score
+        self.reward = reward
+
             
 # !!!!!!!!!!!!
 class Port():
@@ -199,12 +207,16 @@ def init():
     butn_5 = Port(5, True, False)
     butn_free = Port(13, True, False)
     butn_pay = Port(26, True, False)
-    # make some arrows
+    # make some arrow objects
     global arrow1
     arrow1 = ScreenObject((15, 890))
+    global arrow2
     arrow2 = ScreenObject((452, 890))
+    global arrow3
     arrow3 = ScreenObject((895, 890))
+    global arrow4
     arrow4 = ScreenObject((1337, 890))
+    global arrow5
     arrow5 = ScreenObject((1775, 890))
     
     pygame.init()
@@ -224,9 +236,9 @@ def init():
     red = (255, 0, 0)
     global blue
     blue = (0, 0, 255)
-    # for autostart to work properly uncomment the line below
-    #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+    
     global display
+    #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
     gpath = 'graphics/'
@@ -318,9 +330,11 @@ def init():
     # small arrow with alpha
     global blue_arrow
     blue_arrow = pygame.image.load(b_arro).convert_alpha()
-
+    global green_glow
     green_glow = pygame.image.load(g_gl).convert_alpha()
+    global red_glow
     red_glow = pygame.image.load(r_gl).convert_alpha()
+    global gray_glow
     gray_glow = pygame.image.load(gr_gl).convert_alpha()
     # set path name to graphics and sound files here ///////
 
@@ -401,57 +415,25 @@ def key_press():
                     x = 5
                     
     return x
+# Place arrows and blit
+def place_arrows(style):
+    if style == 'outer2':
+        ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
+        ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)
+    if style == 'all5':
+        ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
+        ScreenObject.blit_scr_obj(arrow2, arrow2.location, blue_arrow)
+        ScreenObject.blit_scr_obj(arrow3, arrow3.location, blue_arrow)
+        ScreenObject.blit_scr_obj(arrow4, arrow4.location, blue_arrow)
+        ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)
+    if style == '2and4':
+        ScreenObject.blit_scr_obj(arrow2, arrow2.location, blue_arrow)
+        ScreenObject.blit_scr_obj(arrow4, arrow4.location, blue_arrow)
+
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #////////////////// START METHODS /////////////////////////
-# CHOOSE GAME ------
-def choose_game(background):
-    global curr_game
-    bakgnd = ScreenObject((0,0))
-    ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
-    greeting = 'Please select a game to play'
-    greet = TextObject(greeting, (image_centerx, 300), 80, white)
-    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
-    # first the left side
-    greeting = 'Photo-ID Challenge'
-    greet = TextObject(greeting, (430, 600), 70, white)
-    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
-    x = 430
-    y = 600
-    # chop these up
-    y = y + 90
-    greeting = 'See if you can match dolphin dorsal fins'
-    greet = TextObject(greeting, (image_centerx, 300), 80, white, 30)
-    parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
-    for item in parsed_lines:
-        greet = TextObject(item, (x, y), 60, white)
-        TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
-        y = y + 70
-    # now the right side
-    x = 1430
-    y = 600
-    greeting = 'Bonehenge Tour Quiz'
-    greet = TextObject(greeting, (x, y), 80, white)
-    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
-    y = y + 90
-    greeting = 'Answer some questions about what you learned on your tour'
-    greet = TextObject(greeting, (x, y), 80, white, 30)
-    parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
-    for item in parsed_lines:
-        greet = TextObject(item, (x, y), 60, white)
-        TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
-        y = y + 70
-    ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
-    
-    pygame.display.flip()
-    game_to_play = key_press()
-    # make the game object and call it curr_game
-    if game_to_play == '1':
-        curr_game = Game('water.jpeg', picture, (0,0), 5)
-        print('dolphin selected')
-    if game_to_play == '2':
-        curr_game = Game('bonehenge.jpeg', qna, (0,0), 3)
-    #return curr_game
+
 
 def free_cash(background):
     ''' called by both games selects if it is a free game or
@@ -513,14 +495,62 @@ def free_cash(background):
                 win = False
                 print('A Loser')
             break'''
-    
+# CHOOSE GAME ------
+def choose_game(background):
+    global curr_game
+    bakgnd = ScreenObject((0,0))
+    ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
+    greeting = 'Please select a game to play'
+    greet = TextObject(greeting, (image_centerx, 300), 80, white)
+    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    # first the left side
+    greeting = 'Photo-ID Challenge'
+    greet = TextObject(greeting, (430, 600), 70, white)
+    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    x = 430
+    y = 600
+    # chop these up
+    y = y + 90
+    greeting = 'See if you can match dolphin dorsal fins'
+    greet = TextObject(greeting, (image_centerx, 300), 80, white, 30)
+    parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
+    for item in parsed_lines:
+        greet = TextObject(item, (x, y), 60, white)
+        TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+        y = y + 70
+    # now the right side
+    x = 1430
+    y = 600
+    greeting = 'Bonehenge Tour Quiz'
+    greet = TextObject(greeting, (x, y), 80, white)
+    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    y = y + 90
+    greeting = 'Answer some questions about what you learned on your tour'
+    greet = TextObject(greeting, (x, y), 80, white, 30)
+    parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
+    for item in parsed_lines:
+        greet = TextObject(item, (x, y), 60, white)
+        TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+        y = y + 70
+    place_arrows('2and4')
+    pygame.display.flip()
+    game_to_play = key_press()
+    # make the game object and call it curr_game
+    if game_to_play == 1:
+        curr_game = TextGame('water.jpeg', picture, (0,0), 5)
+        print('dolphin selected')
+    if game_to_play == 2:
+        curr_game = TextGame('bonehenge.jpeg', qna, (0,0), 3)
+    return curr_game    
 # GAME LOOP -------
 def game_loop():
-    
-    # game must be created first
     global curr_game
     free_cash(game_choice)
+    # game must be created first
     curr_game = choose_game(finalscore)
+    print(curr_game.num_ans)
+    # curr_game returns a Game object with it's backround, 
+    # question/answer file, (0,0)location, number of questions
 
 
     #curr_game.take_turn()
