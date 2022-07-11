@@ -3,6 +3,8 @@
 # IMPORTS START --------------------------------------------------
 # makes extensive use of pygame to blit the screen
 from typing import final
+
+from cv2 import QT_FONT_BLACK
 import game_util as gu
 from genericpath import exists
 from http.client import PROXY_AUTHENTICATION_REQUIRED
@@ -72,12 +74,13 @@ class TextGame():
  # ============ end of Game class methods =============== 
  # ============ start PictGame class =========================
 class PictGame():
-    def __init__(self, background, matches, score, reward= None): 
+    def __init__(self, background, qu_ans, score, num_ans, reward= None): 
         self.background = background
-        self.matches = matches # a list of tuples
+        self.qu_ans = qu_ans # a list of tuples
         self.score = score
         self.reward = reward
-
+        print('picture is')
+        print(qu_ans)
             
 # !!!!!!!!!!!!
 class Port():
@@ -350,7 +353,7 @@ def init():
     global wrong
     wrong = get_file('wrong_resp.csv', 1)[0]
     global picture
-    picture = get_file('picture.csv', 6)[0]
+    picture = get_file('picture.csv', 2)[0]
 # /////////////////// START UTILITY METHODS ////////////////////////
 def get_file(list_file, col_count):
     # now a more generic reader that can take any number of columns
@@ -537,10 +540,10 @@ def choose_game(background):
     game_to_play = key_press()
     # make the game object and call it curr_game
     if game_to_play == 1:
-        curr_game = TextGame('water.jpeg', picture, (0,0), 5)
+        curr_game = TextGame('water.jpeg', qna, (0,0), 5)
         print('dolphin selected')
     if game_to_play == 2:
-        curr_game = TextGame('bonehenge.jpeg', qna, (0,0), 3)
+        curr_game = PictGame('somepic.jpg', picture, (0,0), 2)
     return curr_game    
 # GAME LOOP -------
 def game_loop():
@@ -548,7 +551,7 @@ def game_loop():
     free_cash(game_choice)
     # game must be created first
     curr_game = choose_game(finalscore)
-    print(curr_game.num_ans)
+    #print(curr_game.num_ans)
     # curr_game returns a Game object with it's backround, 
     # question/answer file, (0,0)location, number of questions
 
