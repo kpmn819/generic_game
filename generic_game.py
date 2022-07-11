@@ -2,6 +2,7 @@
 
 # IMPORTS START --------------------------------------------------
 # makes extensive use of pygame to blit the screen
+from typing import final
 import game_util as gu
 from genericpath import exists
 from http.client import PROXY_AUTHENTICATION_REQUIRED
@@ -126,9 +127,9 @@ class Port():
 # !!!!!!!!!!!!!
 class ScreenObject():
     def __init__(self, location):
-        
         self.location = location
-        
+    def blit_scr_obj(self, location, image):
+        display.blit(image, location)   
 class TextObject(ScreenObject):
     def __init__(self, text, location, size, color, width=None, font=None):
         self.text = text
@@ -176,6 +177,7 @@ class TextObject(ScreenObject):
             display.blit(render_ds, render_ds_rect)
         display.blit(render_message, render_msg_rect)
         # no flip here up to the caller
+    
 # \\\\\\\\\\\\\\\\\\\\ END CLASSES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 def init():
     # set up the ports port#, input T/F, state T/F (optional)
@@ -197,8 +199,14 @@ def init():
     butn_5 = Port(5, True, False)
     butn_free = Port(13, True, False)
     butn_pay = Port(26, True, False)
+    # make some arrows
+    global arrow1
+    arrow1 = ScreenObject((15, 890))
+    arrow2 = ScreenObject((452, 890))
+    arrow3 = ScreenObject((895, 890))
+    arrow4 = ScreenObject((1337, 890))
+    arrow5 = ScreenObject((1775, 890))
     
- 
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.set_volume(1.0)
@@ -305,8 +313,10 @@ def init():
     #free_donate = pygame.image.load(free_donate_pict).convert_alpha() # not used
     global game_choice
     game_choice = pygame.image.load(game_choice_pict).convert_alpha()
+    global finalscore
     finalscore = pygame.image.load(finalscore_pict).convert_alpha()
     # small arrow with alpha
+    global blue_arrow
     blue_arrow = pygame.image.load(b_arro).convert_alpha()
 
     green_glow = pygame.image.load(g_gl).convert_alpha()
@@ -360,33 +370,98 @@ def get_file(list_file, col_count):
         # print message on screen
         file_error = True
         
-
+def key_press():
+    x = ''
+    loop = True
+    while x == '':
+        # simulate button polling
+        # creating a loop to check events that
+        # are occurring
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            # checking if keydown event happened or not
+            if event.type == pygame.KEYDOWN:
+                
+                # checking if key "A" was pressed
+                if event.key == pygame.K_1:
+                    x = 1
+                    
+                if event.key == pygame.K_2:
+                    x = 2
+                    
+                if event.key == pygame.K_3:
+                    x = 3
+                    
+                if event.key == pygame.K_4:
+                    x = 4
+                    
+                if event.key == pygame.K_5:
+                    x = 5
+                    
+    return x
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #////////////////// START METHODS /////////////////////////
 # CHOOSE GAME ------
-def choose_game():
+def choose_game(background):
     global curr_game
-    print('1= dolphin, 2= Bonehenge, 3= humpback')
-    #game_to_play = input('A number please  ')
-    game_to_play = '1'
+    bakgnd = ScreenObject((0,0))
+    ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
+    greeting = 'Please select a game to play'
+    greet = TextObject(greeting, (image_centerx, 300), 80, white)
+    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    # first the left side
+    greeting = 'Photo-ID Challenge'
+    greet = TextObject(greeting, (430, 600), 70, white)
+    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    x = 430
+    y = 600
+    # chop these up
+    y = y + 90
+    greeting = 'See if you can match dolphin dorsal fins'
+    greet = TextObject(greeting, (image_centerx, 300), 80, white, 30)
+    parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
+    for item in parsed_lines:
+        greet = TextObject(item, (x, y), 60, white)
+        TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+        y = y + 70
+    # now the right side
+    x = 1430
+    y = 600
+    greeting = 'Bonehenge Tour Quiz'
+    greet = TextObject(greeting, (x, y), 80, white)
+    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    y = y + 90
+    greeting = 'Answer some questions about what you learned on your tour'
+    greet = TextObject(greeting, (x, y), 80, white, 30)
+    parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
+    for item in parsed_lines:
+        greet = TextObject(item, (x, y), 60, white)
+        TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+        y = y + 70
+    ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
+    
+    pygame.display.flip()
+    game_to_play = key_press()
     # make the game object and call it curr_game
     if game_to_play == '1':
         curr_game = Game('water.jpeg', picture, (0,0), 5)
         print('dolphin selected')
     if game_to_play == '2':
         curr_game = Game('bonehenge.jpeg', qna, (0,0), 3)
-    return curr_game
+    #return curr_game
 
-def free_cash(picture):
+def free_cash(background):
     ''' called by both games selects if it is a free game or
     if they put in some money sets global variables'''
     # display rules and wait for input
     global free
     global win
     global display
-     
-    display.blit(picture, (0, 0))
+    bakgnd = ScreenObject((0,0))
+    ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
     #create the object first can reuse object since blit stores it
     greeting = 'Press Free Play'
     greet = TextObject(greeting, (image_centerx, 200), 60, white )
@@ -410,7 +485,9 @@ def free_cash(picture):
     
     while True:
         sleep(.05)
-        x = input('THIS IS WHERE THE LOOP GOES')
+        selection = key_press()
+        print(selection)
+        break
         #print('in pay detection')
         '''if GPIO.input(portList2[1]) == GPIO.LOW:
             sleep(.08)
@@ -443,10 +520,10 @@ def game_loop():
     # game must be created first
     global curr_game
     free_cash(game_choice)
-    curr_game = choose_game()
+    curr_game = choose_game(finalscore)
 
 
-    curr_game.take_turn()
+    #curr_game.take_turn()
     print('took a turn')    
 
 #\\\\\\\\\\\\\\\\\\\\\\ END METHODS \\\\\\\\\\\\\\\\\\\\\\\\
