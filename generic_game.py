@@ -406,6 +406,7 @@ def free_cash(picture):
     pygame.display.flip()
     
     # Select if this is a paid or free play
+    # make a quick change to this file
     
     while True:
         sleep(.05)
