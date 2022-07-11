@@ -81,6 +81,15 @@ class PictGame():
         self.reward = reward
         print('picture is')
         print(qu_ans)
+        # see if we can load them into pygame
+        loaded = []
+        for x in range(0, len(self.qu_ans)-1):
+            file_name = 'graphics/' + self.qu_ans[x][0]
+            loaded.append(pygame.image.load(file_name).convert_alpha())
+            file_name = 'graphics/' + self.qu_ans[x][1]
+            loaded.append(pygame.image.load(file_name).convert_alpha())
+        print('length of q_ans')
+        print(self.qu_ans[0][1])
             
 # !!!!!!!!!!!!
 class Port():
