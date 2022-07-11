@@ -376,10 +376,6 @@ def choose_game():
         print('dolphin selected')
     if game_to_play == '2':
         curr_game = Game('bonehenge.jpeg', qna, (0,0), 3)
-    '''print('Here are the questions for curr_game')
-    print(curr_game.q_thisgame)
-    print('And the answers')
-    print(curr_game.a_thisgame)'''
     return curr_game
 
 def free_cash(picture):
@@ -391,8 +387,8 @@ def free_cash(picture):
     global display
      
     display.blit(picture, (0, 0))
+    #create the object first can reuse object since blit stores it
     greeting = 'Press Free Play'
-    #create the object firs
     greet = TextObject(greeting, (image_centerx, 200), 60, white )
     TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
     greeting = 'or'
@@ -410,7 +406,7 @@ def free_cash(picture):
     pygame.display.flip()
     
     # Select if this is a paid or free play
-    # forever loop until timeout_decorator kicks in
+    
     while True:
         sleep(.05)
         x = input('THIS IS WHERE THE LOOP GOES')
