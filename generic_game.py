@@ -47,25 +47,17 @@ class TextGame():
         self.reward = reward
         self.num_ans = num_ans # how many answers per question
 
-        # how many q and a are there, how many do we need assume 5?
-        # $$$$$$$$$$$$$$$$$ NEED TO REWORK TO GET JUST QUESTIONS AND JUST ANSWERS POOL
-        q_count = len(qu_ans)
-        q_random = sample(range( 0, q_count), 5)
-        self.q_random = q_random
-        self.q_thisgame = []
-        self.a_thisgame = []
-         # make a list of just the questions for this game
-        for q in self.q_random:
-            self.q_thisgame.append(self.qu_ans[q][0]) # now we have our game q & a
-            # now let's get the list of the answers
-            for x in range(self.num_ans):
-                self.a_thisgame.append(self.qu_ans[q][x + 1])
-        # make a temp list to group the answers per question
-        temp_list = []
-        for i in range(0, len(self.a_thisgame), num_ans):
-            temp_list.append(self.a_thisgame[i:i+num_ans])
-        self.a_thisgame = temp_list # all cleaned up and ready
-        # leaving here our Game has the questions and answers a passed in score of (0,0)
+        # make two lists of questions and answers
+        self.just_a = []
+        self.just_q = []
+        for q_plus_a in self.qu_ans:
+            self.just_q.append(q_plus_a[0])
+            temp = []
+            for i in range(1, len(q_plus_a)):
+                temp.append(q_plus_a[i])
+            self.just_a.append(temp)
+            
+        # leaving here our Game has the questions and answers
         # and a background
     # ============= end of Game class initialization ================   
 
