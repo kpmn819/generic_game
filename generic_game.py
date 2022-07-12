@@ -479,7 +479,6 @@ def free_cash(background):
         selection = key_press()
         print(selection)
         break
-        #print('in pay detection')
         '''if GPIO.input(portList2[1]) == GPIO.LOW:
             sleep(.08)
             free = True
@@ -571,7 +570,10 @@ def game_loop():
         pygame.display.flip()
         sleep(4)
         print(type(curr_game).__name__)
-    
+        print(curr_game.all_picts)
+    else:
+        print(curr_game.just_a)
+        print(curr_game.just_q)
     #display.blit(curr_game.all_picts[0], (100,100))  
     #pygame.display.flip()
     
