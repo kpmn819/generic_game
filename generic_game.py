@@ -87,8 +87,10 @@ class PictGame():
         for x in range(0, len(self.qu_ans)):
             file_name = 'graphics/' + self.qu_ans[x][0]
             self.all_picts.append(pygame.image.load(file_name).convert_alpha())
-            file_name = 'graphics/' + self.qu_ans[x][1]
-            self.all_picts.append(pygame.image.load(file_name).convert_alpha())
+            # for some reason this generates a one dimensional list
+
+            #file_name = 'graphics/' + self.qu_ans[x][1]
+            #self.all_picts.append(pygame.image.load(file_name).convert_alpha())
         
         # so thoretically we have a list with all the picture objecs
         
@@ -561,10 +563,14 @@ def choose_game(background):
     if game_to_play == 2:
         curr_game = PictGame('somepic.jpg', picture, (0,0), 2)
     # $$$$$$$$$$$$$$$$ test only $$$$$$$$$$$$$$$$$$$$
-    display.blit(curr_game.all_picts[0], (200,200))  
-    display.blit(curr_game.all_picts[1], (400,400))  
+    display.blit(curr_game.all_picts[10], (200,300))  
+    display.blit(curr_game.all_picts[11], (600,300))  
+    display.blit(curr_game.all_picts[2], (900,300))  
+    display.blit(curr_game.all_picts[3], (1200,300))  
     pygame.display.flip()
     sleep(4)
+    print(type(curr_game).__name__)
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     return curr_game  
 
 
