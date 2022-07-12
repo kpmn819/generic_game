@@ -72,8 +72,6 @@ class PictGame():
         self.qu_ans = qu_ans # a list of tuples
         self.score = score
         self.reward = reward
-        print('picture is')
-        print(qu_ans)
         # see if we can load them into pygame
         
         self.all_picts = []
@@ -555,15 +553,6 @@ def choose_game(background):
         print('dolphin selected')
     if game_to_play == 2:
         curr_game = PictGame('somepic.jpg', picture, (0,0), 2)
-    # $$$$$$$$$$$$$$$$ test only $$$$$$$$$$$$$$$$$$$$
-    display.blit(curr_game.all_picts[10], (200,300))  
-    display.blit(curr_game.all_picts[11], (600,300))  
-    display.blit(curr_game.all_picts[2], (900,300))  
-    display.blit(curr_game.all_picts[3], (1200,300))  
-    pygame.display.flip()
-    sleep(4)
-    print(type(curr_game).__name__)
-    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     return curr_game  
 
 
@@ -574,6 +563,14 @@ def game_loop():
     free_cash(game_choice)
     # game must be created first
     curr_game = choose_game(finalscore)
+    if type(curr_game).__name__ == 'PictGame':
+        display.blit(curr_game.all_picts[10], (200,300))  
+        display.blit(curr_game.all_picts[11], (600,300))  
+        display.blit(curr_game.all_picts[2], (900,300))  
+        display.blit(curr_game.all_picts[3], (1200,300))  
+        pygame.display.flip()
+        sleep(4)
+        print(type(curr_game).__name__)
     
     #display.blit(curr_game.all_picts[0], (100,100))  
     #pygame.display.flip()
