@@ -48,6 +48,7 @@ class TextGame():
         self.num_ans = num_ans # how many answers per question
 
         # how many q and a are there, how many do we need assume 5?
+        # $$$$$$$$$$$$$$$$$ NEED TO REWORK TO GET JUST QUESTIONS AND JUST ANSWERS POOL
         q_count = len(qu_ans)
         q_random = sample(range( 0, q_count), 5)
         self.q_random = q_random
