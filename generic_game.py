@@ -82,14 +82,17 @@ class PictGame():
         print('picture is')
         print(qu_ans)
         # see if we can load them into pygame
-        loaded = []
-        for x in range(0, len(self.qu_ans)-1):
+        
+        self.all_picts = []
+        for x in range(0, len(self.qu_ans)):
             file_name = 'graphics/' + self.qu_ans[x][0]
-            loaded.append(pygame.image.load(file_name).convert_alpha())
+            self.all_picts.append(pygame.image.load(file_name).convert_alpha())
             file_name = 'graphics/' + self.qu_ans[x][1]
-            loaded.append(pygame.image.load(file_name).convert_alpha())
-        print('length of q_ans')
-        print(self.qu_ans[0][1])
+            self.all_picts.append(pygame.image.load(file_name).convert_alpha())
+        
+        # so thoretically we have a list with all the picture objecs
+        
+        
             
 # !!!!!!!!!!!!
 class Port():
@@ -474,6 +477,7 @@ def free_cash(background):
     TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
     pygame.display.flip()
     
+    
     # Select if this is a paid or free play
     # make a quick change to this file
     
@@ -507,6 +511,9 @@ def free_cash(background):
                 win = False
                 print('A Loser')
             break'''
+
+
+
 # CHOOSE GAME ------
 def choose_game(background):
     global curr_game
@@ -553,13 +560,25 @@ def choose_game(background):
         print('dolphin selected')
     if game_to_play == 2:
         curr_game = PictGame('somepic.jpg', picture, (0,0), 2)
-    return curr_game    
+    # $$$$$$$$$$$$$$$$ test only $$$$$$$$$$$$$$$$$$$$
+    display.blit(curr_game.all_picts[0], (200,200))  
+    display.blit(curr_game.all_picts[1], (400,400))  
+    pygame.display.flip()
+    sleep(4)
+    return curr_game  
+
+
+
 # GAME LOOP -------
 def game_loop():
     global curr_game
     free_cash(game_choice)
     # game must be created first
     curr_game = choose_game(finalscore)
+    
+    #display.blit(curr_game.all_picts[0], (100,100))  
+    #pygame.display.flip()
+    
     #print(curr_game.num_ans)
     # curr_game returns a Game object with it's backround, 
     # question/answer file, (0,0)location, number of questions
@@ -576,11 +595,6 @@ def game_loop():
 def main():
     try:
         init()
-        stuff ='here is a really long line that will have to be compressed by our formatter'
-        zow = TextObject(stuff, (200,300), 50, red)
-        print(zow.color)
-        zow.text =TextObject.parse_string(zow, stuff, 10)
-        print(zow.text)
         global curr_game
     
         try:
