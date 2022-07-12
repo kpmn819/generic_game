@@ -250,7 +250,7 @@ def init():
     display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
     gpath = 'graphics/'
-    udol1 = gpath + '25b.jpg'
+    '''1udol1 = gpath + '25b.jpg'
     udol2 = gpath + '26b.jpg'
     udol3 = gpath + '75a.jpg'
     udol4 = gpath + '86a.jpg'
@@ -277,7 +277,7 @@ def init():
     cdol9 = gpath + '618b.jpg'
     cdol10 = gpath + '706a.jpg'
     cdol11 = gpath + '1142a.jpg'
-    cdol12 = gpath + '1726b.jpg'
+    cdol12 = gpath + '1726b.jpg'''
 
     g1_open_pict = gpath + 'game_1.jpg'
     g2_open_pict = gpath + 'game_2.jpg'
@@ -302,7 +302,7 @@ def init():
     final_vol = (.3,1,1,.5,1,1)
     # now to actually load them same letters this has to be done in two steps
     # first the user pictures
-    uw1 = pygame.image.load(udol1).convert_alpha()
+    '''uw1 = pygame.image.load(udol1).convert_alpha()
     uw2 = pygame.image.load(udol2).convert_alpha()
     uw3 = pygame.image.load(udol3).convert_alpha()
     uw4 = pygame.image.load(udol4).convert_alpha()
@@ -326,7 +326,7 @@ def init():
     cw9 = pygame.image.load(cdol9).convert_alpha()
     cw10 = pygame.image.load(cdol10).convert_alpha()
     cw11 = pygame.image.load(cdol11).convert_alpha()
-    cw12 = pygame.image.load(cdol12).convert_alpha()
+    cw12 = pygame.image.load(cdol12).convert_alpha()'''
     # full 1920 x 1080 images for backgrounds
     g1_bkg = pygame.image.load(g1_open_pict).convert_alpha()
     g2_bkg = pygame.image.load(g2_open_pict).convert_alpha()
@@ -553,7 +553,31 @@ def choose_game(background):
     if game_to_play == 2:
         curr_game = PictGame('somepic.jpg', picture, (0,0), 2)
     return curr_game  
+# TEXT GAME =====================
+def text_game():
+        # get 5 (number of turns) 
+    turn_picks = sample(range( 0, len(curr_game.just_q)), 5)
+    print(turn_picks)# a list of index numbers for q & a
+    # take turns
+    for index in turn_picks:
+        print(curr_game.just_q[index])
+        turn_ans = (curr_game.just_a[index])
+        print(turn_ans[0])
+        # need to go through questions and randomize answers
+        display_list = turn_ans[:] # make a copy
+        shuffle(display_list)
+        print(display_list)
+        # for each turn need to blit question and answers on screen
+        # have the lights right and wait for a response
+        resp = input('Select 1 2 or 3 ')
+        if display_list[int(resp)-1] == turn_ans[0]:
+            print('got it')
+        else:
+            print('wrong')
 
+# PICTURE GAME =================
+def picture_game():
+    pass
 
 
 # GAME LOOP -------
@@ -574,6 +598,7 @@ def game_loop():
     else:
         print(curr_game.just_a)
         print(curr_game.just_q)
+        text_game()
     #display.blit(curr_game.all_picts[0], (100,100))  
     #pygame.display.flip()
     
