@@ -7,9 +7,7 @@ from random import randrange, shuffle, random, sample
 #from random import sample
 from time import sleep, time
 import sys, pygame, os
-from tkinter import FALSE
-#from xml.dom import WrongDocumentErr
-#from xml.etree.ElementTree import QName
+
 from pygame.locals import *
 if os.name == 'nt':
     pass
@@ -64,14 +62,31 @@ class PictGame():
     def __init__(self, background, qu_ans, score, num_ans, reward= None): 
         self.background = background
         self.qu_ans = qu_ans # a list of tuples
+        # like this (image 1a, image 1b)
+        #           (image 2a, image 2b)
         self.score = score
         self.reward = reward
         # see if we can load them into pygame
-        
+        all_files = []
+        count = 0
         self.all_picts = []
-        for x in range(0, len(self.qu_ans)):
-            file_name = 'graphics/' + self.qu_ans[x][0]
-            self.all_picts.append(pygame.image.load(file_name).convert_alpha())
+        for pair in range(0, len(self.qu_ans)):
+            temp = []
+            temp_surface = []
+            temp.append(self.qu_ans[count][0])
+            temp.append(self.qu_ans[count][1])
+            temp_surface.append(pygame.image.load('graphics/'+ self.qu_ans[count][0]).convert_alpha())
+            temp_surface.append(pygame.image.load('graphics/'+ self.qu_ans[count][1]).convert_alpha())
+                
+            count += 1
+            self.all_picts.append(temp_surface)
+            all_files.append(temp)
+        print(all_files)
+      
+
+
+            
+
             # for some reason this generates a one dimensional list
 
             #file_name = 'graphics/' + self.qu_ans[x][1]
@@ -558,7 +573,12 @@ def text_game():
         print('Score is now ',str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' wrong' )
 # PICTURE GAME =================
 def picture_game():
-    pass
+    display.blit(curr_game.all_picts[0][0], (200,300))  
+    display.blit(curr_game.all_picts[0][1], (600,300))  
+    display.blit(curr_game.all_picts[1][0], (900,300))  
+    display.blit(curr_game.all_picts[1][1], (1200,300))  
+    pygame.display.flip()
+    
 
 
 # GAME LOOP -------
@@ -569,11 +589,8 @@ def game_loop():
     curr_game = choose_game(finalscore)
     
     if type(curr_game).__name__ == 'PictGame':
-        display.blit(curr_game.all_picts[10], (200,300))  
-        display.blit(curr_game.all_picts[11], (600,300))  
-        display.blit(curr_game.all_picts[2], (900,300))  
-        display.blit(curr_game.all_picts[3], (1200,300))  
-        pygame.display.flip()
+        picture_game()
+     
         sleep(4)
         print(type(curr_game).__name__)
         print(curr_game.all_picts)
