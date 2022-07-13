@@ -2,14 +2,7 @@
 
 # IMPORTS START --------------------------------------------------
 # makes extensive use of pygame to blit the screen
-from turtle import ycor
-from typing import final
 
-from cv2 import QT_FONT_BLACK
-#import game_util as gu
-from genericpath import exists
-from http.client import PROXY_AUTHENTICATION_REQUIRED
-from lib2to3.pgen2.token import NUMBER
 from random import randrange, shuffle, random, sample
 #from random import sample
 from time import sleep, time
