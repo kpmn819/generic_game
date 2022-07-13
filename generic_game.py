@@ -81,7 +81,7 @@ class PictGame():
             count += 1
             self.all_picts.append(temp_surface)
             all_files.append(temp)
-        print(all_files)
+        # we now have a list of pairs of surfaces ready to be blitted
       
 
 
@@ -573,10 +573,25 @@ def text_game():
         print('Score is now ',str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' wrong' )
 # PICTURE GAME =================
 def picture_game():
-    display.blit(curr_game.all_picts[0][0], (200,300))  
-    display.blit(curr_game.all_picts[0][1], (600,300))  
-    display.blit(curr_game.all_picts[1][0], (900,300))  
-    display.blit(curr_game.all_picts[1][1], (1200,300))  
+    # get 5 indexes for our turns
+    turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
+    for x in range(0,4):
+        question_picture = curr_game.all_picts[turn_picks[x]][0]
+        answer_picture = curr_game.all_picts[turn_picks[x]][1]
+        # need to get a random set of 2 other indexes the don't equal hero
+        wrong_a = answer_picture
+        wrong_b = answer_picture
+        while answer_picture == wrong_a:
+            index = sample(range( 0, len(curr_game.all_picts)), 1)[0]
+            wrong_a = curr_game.all_picts[index][1]
+        while answer_picture == wrong_b:
+            index = sample(range( 0, len(curr_game.all_picts)), 1)[0]
+            wrong_b = curr_game.all_picts[index][1]
+    display.blit(question_picture, (990,300))  
+    display.blit(answer_picture, (200,600)) 
+    display.blit(wrong_a, (600,600))  
+    display.blit(wrong_b, (1000,600))  
+    #display.blit(curr_game.all_picts[1][1], (1200,800))  
     pygame.display.flip()
     
 
