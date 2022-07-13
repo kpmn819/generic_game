@@ -575,25 +575,31 @@ def text_game():
 def picture_game():
     # get 5 indexes for our turns
     turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
-    for x in range(0,4):
-        question_picture = curr_game.all_picts[turn_picks[x]][0]
-        answer_picture = curr_game.all_picts[turn_picks[x]][1]
+    for q in range(0,5):
+        question_picture = curr_game.all_picts[turn_picks[q]][0]
+        answer_picture = curr_game.all_picts[turn_picks[q]][1]
         # need to get a random set of 2 other indexes the don't equal hero
         wrong_a = answer_picture
         wrong_b = answer_picture
+        shuffle_answers = []
+        shuffle_answers.append(answer_picture)
         # pick something other than the hero
-        while answer_picture == wrong_a:
+        for i in range(0,5):
+            while (answer_picture == wrong_a) or (wrong_a in shuffle_answers):
+                index = sample(range( 0, len(curr_game.all_picts)), 1)[0]
+                wrong_a = curr_game.all_picts[index][1]
+            shuffle_answers.append(wrong_a)
+        '''while answer_picture == wrong_b:
             index = sample(range( 0, len(curr_game.all_picts)), 1)[0]
-            wrong_a = curr_game.all_picts[index][1]
-        while answer_picture == wrong_b:
-            index = sample(range( 0, len(curr_game.all_picts)), 1)[0]
-            wrong_b = curr_game.all_picts[index][1]
-        shuffle_answers = [answer_picture, wrong_a, wrong_b]
+            wrong_b = curr_game.all_picts[index][1]'''
+        #shuffle_answers = [answer_picture, wrong_a, wrong_b]
         shuffle(shuffle_answers)
-        display.blit(question_picture, (990,300))  
-        display.blit(shuffle_answers[0], (200,600)) 
-        display.blit(shuffle_answers[1], (600,600))  
-        display.blit(shuffle_answers[2], (1000,600))  
+        display.blit(question_picture, (840,40))  
+        display.blit(shuffle_answers[0], (80,600)) 
+        display.blit(shuffle_answers[1], (430,600))  
+        display.blit(shuffle_answers[2], (810,600))
+        display.blit(shuffle_answers[3], (1200,600))
+        display.blit(shuffle_answers[4], (1500,600))
         pygame.display.flip()
         resp = key_press()
         print(resp)
@@ -610,7 +616,7 @@ def game_loop():
     if type(curr_game).__name__ == 'PictGame':
         picture_game()
      
-        sleep(4)
+        
         print(type(curr_game).__name__)
         print(curr_game.all_picts)
     else:
