@@ -5,7 +5,7 @@
 from typing import final
 
 from cv2 import QT_FONT_BLACK
-import game_util as gu
+#import game_util as gu
 from genericpath import exists
 from http.client import PROXY_AUTHENTICATION_REQUIRED
 from lib2to3.pgen2.token import NUMBER
@@ -328,7 +328,9 @@ def init():
     cw11 = pygame.image.load(cdol11).convert_alpha()
     cw12 = pygame.image.load(cdol12).convert_alpha()'''
     # full 1920 x 1080 images for backgrounds
+    global g1_bkg
     g1_bkg = pygame.image.load(g1_open_pict).convert_alpha()
+    global g2_bkg
     g2_bkg = pygame.image.load(g2_open_pict).convert_alpha()
     #free_donate = pygame.image.load(free_donate_pict).convert_alpha() # not used
     global game_choice
@@ -548,18 +550,23 @@ def choose_game(background):
     game_to_play = key_press()
     # make the game object and call it curr_game
     if game_to_play == 1:
-        curr_game = TextGame('water.jpeg', qna, (0,0), 5)
+        curr_game = TextGame(g2_bkg, qna, [0,0], 5)
         print('dolphin selected')
     if game_to_play == 2:
-        curr_game = PictGame('somepic.jpg', picture, (0,0), 2)
+        curr_game = PictGame(g1_bkg, picture, [0,0], 2)
     return curr_game  
 # TEXT GAME =====================
 def text_game():
         # get 5 (number of turns) 
     turn_picks = sample(range( 0, len(curr_game.just_q)), 5)
     print(turn_picks)# a list of index numbers for q & a
+    curr_game.score = [0,0]
+
     # take turns
+    # ||||||||| 5 TURNS ||||||||||||||||||||||||
     for index in turn_picks:
+        display.blit(curr_game.background, (0,0))
+        
         print(curr_game.just_q[index])
         turn_ans = (curr_game.just_a[index])
         print(turn_ans[0])
@@ -568,13 +575,35 @@ def text_game():
         shuffle(display_list)
         print(display_list)
         # for each turn need to blit question and answers on screen
+        # display the question
+        question = TextObject(curr_game.just_q[index], [990,100], 80, white, 30)
+        q_parsed = TextObject.parse_string(question, question.text, question.width)
+        q_parsed = ''.join(q_parsed) # make a string out of a list
+        TextObject.font_process(question, q_parsed, question.location, question.size, question.color)
+        # left answer
+        x = 320
+        for i in range(0,3):
+            answer = TextObject(display_list[i], [x,500], 60, white, 30)
+            q_parsed = TextObject.parse_string(answer, answer.text, answer.width)
+            q_parsed = ''.join(q_parsed) # make a string out of a list
+            TextObject.font_process(answer, q_parsed, answer.location, answer.size, answer.color)
+            x += 640
+
+        # mid answer
+
+        #right answer
+
+        pygame.display.flip()
         # have the lights right and wait for a response
-        resp = input('Select 1 2 or 3 ')
+        #resp = input('Select 1 2 or 3 ')
+        resp = str(key_press())
         if display_list[int(resp)-1] == turn_ans[0]:
             print('got it')
+            curr_game.score[0] = curr_game.score[0] + 1
         else:
             print('wrong')
-
+            curr_game.score[1] = curr_game.score[1] + 1
+        print('Score is now ',str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' wrong' )
 # PICTURE GAME =================
 def picture_game():
     pass
@@ -586,6 +615,7 @@ def game_loop():
     free_cash(game_choice)
     # game must be created first
     curr_game = choose_game(finalscore)
+    
     if type(curr_game).__name__ == 'PictGame':
         display.blit(curr_game.all_picts[10], (200,300))  
         display.blit(curr_game.all_picts[11], (600,300))  
