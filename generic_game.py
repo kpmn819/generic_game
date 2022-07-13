@@ -146,7 +146,13 @@ class ScreenObject():
     def __init__(self, location):
         self.location = location
     def blit_scr_obj(self, location, image):
-        display.blit(image, location)   
+        display.blit(image, location) 
+class GraphicObject(ScreenObject):
+    def __init__(self, location, file_name):
+        self.file_name = file_name
+        super().__init__(location)
+    # load into pygame 
+        self.surface = pygame.image.load(file_name).convert_alpha()
 class TextObject(ScreenObject):
     def __init__(self, text, location, size, color, width=None, font=None):
         self.text = text
@@ -175,7 +181,6 @@ class TextObject(ScreenObject):
         font = pygame.font.SysFont('FreeSans', size, True, False)
         # render font on a new surface font.render(text, antialias, bkgnd = none)
         render_message = font.render(text, True, color)
-        
         # render drop shadow in black
         if d_shadow:
             render_ds = font.render(text, True, black)
@@ -183,7 +188,6 @@ class TextObject(ScreenObject):
         # attempt to center works
         # create a rectangular object for the text surface object
         render_msg_rect = render_message.get_rect()
-        
         # center in x, use y from call
         #render_msg_rect.center = (image_centerx, y) # (x,y) x = screen center
         render_msg_rect.center = location # (x,y) x = screen center
@@ -251,34 +255,6 @@ def init():
     display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
     gpath = 'graphics/'
-    '''1udol1 = gpath + '25b.jpg'
-    udol2 = gpath + '26b.jpg'
-    udol3 = gpath + '75a.jpg'
-    udol4 = gpath + '86a.jpg'
-    udol5 = gpath + '100b.jpg'
-    udol6 = gpath + '126b.jpg'
-
-    udol7 = gpath + '271c.jpg'
-    udol8 = gpath + '454b.jpg'
-    udol9 = gpath + '618a.jpg'
-    udol10 = gpath + '706b.jpg'
-    udol11 = gpath + '1142b.jpg'
-    udol12 = gpath + '1726a.jpg'
-
-    # now set pointers to computer picks
-    cdol1 = gpath + '25a.jpg'
-    cdol2 = gpath + '26a.jpg'
-    cdol3 = gpath + '75b.jpg'
-    cdol4 = gpath + '86c.jpg'
-    cdol5 = gpath + '100a.jpg'
-    cdol6 = gpath + '126a.jpg'
-
-    cdol7 = gpath + '271b.jpg'
-    cdol8 = gpath + '454a.jpg'
-    cdol9 = gpath + '618b.jpg'
-    cdol10 = gpath + '706a.jpg'
-    cdol11 = gpath + '1142a.jpg'
-    cdol12 = gpath + '1726b.jpg'''
 
     g1_open_pict = gpath + 'game_1.jpg'
     g2_open_pict = gpath + 'game_2.jpg'
@@ -301,36 +277,11 @@ def init():
     final_audio = ('0_right.wav','1_right.wav','2_right.mp3','3_right.wav',
                 '4_right.mp3','5_right.wav')
     final_vol = (.3,1,1,.5,1,1)
-    # now to actually load them same letters this has to be done in two steps
-    # first the user pictures
-    '''uw1 = pygame.image.load(udol1).convert_alpha()
-    uw2 = pygame.image.load(udol2).convert_alpha()
-    uw3 = pygame.image.load(udol3).convert_alpha()
-    uw4 = pygame.image.load(udol4).convert_alpha()
-    uw5 = pygame.image.load(udol5).convert_alpha()
-    uw6 = pygame.image.load(udol6).convert_alpha()
-    uw7 = pygame.image.load(udol7).convert_alpha()
-    uw8 = pygame.image.load(udol8).convert_alpha()
-    uw9 = pygame.image.load(udol9).convert_alpha()
-    uw10 = pygame.image.load(udol10).convert_alpha()
-    uw11 = pygame.image.load(udol11).convert_alpha()
-    uw12 = pygame.image.load(udol12).convert_alpha()
-    # now the computer pictures
-    cw1 = pygame.image.load(cdol1).convert_alpha()
-    cw2 = pygame.image.load(cdol2).convert_alpha()
-    cw3 = pygame.image.load(cdol3).convert_alpha()
-    cw4 = pygame.image.load(cdol4).convert_alpha()
-    cw5 = pygame.image.load(cdol5).convert_alpha()
-    cw6 = pygame.image.load(cdol6).convert_alpha()
-    cw7 = pygame.image.load(cdol7).convert_alpha()
-    cw8 = pygame.image.load(cdol8).convert_alpha()
-    cw9 = pygame.image.load(cdol9).convert_alpha()
-    cw10 = pygame.image.load(cdol10).convert_alpha()
-    cw11 = pygame.image.load(cdol11).convert_alpha()
-    cw12 = pygame.image.load(cdol12).convert_alpha()'''
+    
     # full 1920 x 1080 images for backgrounds
     global g1_bkg
     g1_bkg = pygame.image.load(g1_open_pict).convert_alpha()
+    #g1_bkg = GraphicObject([0,0], gpath + 'game_1.jpg')
     global g2_bkg
     g2_bkg = pygame.image.load(g2_open_pict).convert_alpha()
     #free_donate = pygame.image.load(free_donate_pict).convert_alpha() # not used
@@ -589,7 +540,7 @@ def text_game():
         y = 500
         for i in range(0,3):
             y = 500
-            answer = TextObject(display_list[i], [x,y], 60, white, 30)
+            answer = TextObject(display_list[i], [x,y], 50, white, 30)
             q_parsed = TextObject.parse_string(answer, answer.text, answer.width)
             print(q_parsed)
             for item in q_parsed:
