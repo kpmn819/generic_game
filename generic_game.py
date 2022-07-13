@@ -2,6 +2,7 @@
 
 # IMPORTS START --------------------------------------------------
 # makes extensive use of pygame to blit the screen
+from turtle import ycor
 from typing import final
 
 from cv2 import QT_FONT_BLACK
@@ -567,26 +568,33 @@ def text_game():
     for index in turn_picks:
         display.blit(curr_game.background, (0,0))
         
-        print(curr_game.just_q[index])
+        #print(curr_game.just_q[index])
         turn_ans = (curr_game.just_a[index])
-        print(turn_ans[0])
+        #print(turn_ans[0])
         # need to go through questions and randomize answers
         display_list = turn_ans[:] # make a copy
         shuffle(display_list)
         print(display_list)
         # for each turn need to blit question and answers on screen
         # display the question
+        x = 990
+        y = 100
         question = TextObject(curr_game.just_q[index], [990,100], 80, white, 30)
         q_parsed = TextObject.parse_string(question, question.text, question.width)
-        q_parsed = ''.join(q_parsed) # make a string out of a list
-        TextObject.font_process(question, q_parsed, question.location, question.size, question.color)
+        for item in q_parsed:
+            TextObject.font_process(question, item, [x,y], question.size, question.color)
+            y += 70
         # left answer
         x = 320
+        y = 500
         for i in range(0,3):
-            answer = TextObject(display_list[i], [x,500], 60, white, 30)
+            y = 500
+            answer = TextObject(display_list[i], [x,y], 60, white, 30)
             q_parsed = TextObject.parse_string(answer, answer.text, answer.width)
-            q_parsed = ''.join(q_parsed) # make a string out of a list
-            TextObject.font_process(answer, q_parsed, answer.location, answer.size, answer.color)
+            print(q_parsed)
+            for item in q_parsed:
+                TextObject.font_process(answer, item, [x,y], answer.size, answer.color)
+                y += 70
             x += 640
 
         # mid answer
