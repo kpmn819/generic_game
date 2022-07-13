@@ -2,21 +2,12 @@
 
 # IMPORTS START --------------------------------------------------
 # makes extensive use of pygame to blit the screen
-from turtle import ycor
-from typing import final
 
-from cv2 import QT_FONT_BLACK
-#import game_util as gu
-from genericpath import exists
-from http.client import PROXY_AUTHENTICATION_REQUIRED
-from lib2to3.pgen2.token import NUMBER
 from random import randrange, shuffle, random, sample
 #from random import sample
 from time import sleep, time
 import sys, pygame, os
-from tkinter import FALSE
-#from xml.dom import WrongDocumentErr
-#from xml.etree.ElementTree import QName
+
 from pygame.locals import *
 if os.name == 'nt':
     pass
@@ -73,18 +64,18 @@ class PictGame():
         self.qu_ans = qu_ans # a list of tuples
         self.score = score
         self.reward = reward
-        # see if we can load them into pygame
-        
+        # iterate through picture files and load the surfaces
+        # into pygame
         self.all_picts = []
+        temp = []
         for x in range(0, len(self.qu_ans)):
-            file_name = 'graphics/' + self.qu_ans[x][0]
+            file_name = 'graphics/' + self.qu_ans[x]
+            temp.append(self.qu_ans[x])
             self.all_picts.append(pygame.image.load(file_name).convert_alpha())
+        print(temp)
+            # generates a list of surfaces to be blitted
             # for some reason this generates a one dimensional list
-
-            #file_name = 'graphics/' + self.qu_ans[x][1]
-            #self.all_picts.append(pygame.image.load(file_name).convert_alpha())
         
-        # so thoretically we have a list with all the picture objecs
         
         
             
@@ -255,15 +246,12 @@ def init():
     display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
     gpath = 'graphics/'
-
-    g1_open_pict = gpath + 'game_1.jpg'
-    g2_open_pict = gpath + 'game_2.jpg'
     #free_donate_pict = gpath + 'free_donate.jpg' #(not used)
-    game_choice_pict = gpath + 'game_choice.jpg'
-    finalscore_pict = gpath + 'finalscore.jpg'
+    
     # arrows
     r_arro = gpath + 'red_arrow.png'
     y_arro = gpath + 'yellow_arrow.png'
+    global b_arro
     b_arro = gpath + 'blue_arrow.png'
     # glows
     g_gl = gpath + 'g-glow.png'
@@ -280,18 +268,17 @@ def init():
     
     # full 1920 x 1080 images for backgrounds
     global g1_bkg
-    g1_bkg = pygame.image.load(g1_open_pict).convert_alpha()
-    #g1_bkg = GraphicObject([0,0], gpath + 'game_1.jpg')
+    g1_bkg = GraphicObject([0,0], gpath + 'game_1.jpg')
     global g2_bkg
-    g2_bkg = pygame.image.load(g2_open_pict).convert_alpha()
-    #free_donate = pygame.image.load(free_donate_pict).convert_alpha() # not used
+    g2_bkg = GraphicObject([0,0], gpath + 'game_2.jpg')
     global game_choice
-    game_choice = pygame.image.load(game_choice_pict).convert_alpha()
+    game_choice = GraphicObject([0,0], gpath + 'game_choice.jpg')
     global finalscore
-    finalscore = pygame.image.load(finalscore_pict).convert_alpha()
+    finalscore = GraphicObject([0,0], gpath + 'finalscore.jpg')
     # small arrow with alpha
     global blue_arrow
     blue_arrow = pygame.image.load(b_arro).convert_alpha()
+
     global green_glow
     green_glow = pygame.image.load(g_gl).convert_alpha()
     global red_glow
@@ -379,16 +366,21 @@ def key_press():
     return x
 # Place arrows and blit
 def place_arrows(style):
-    if style == 'outer2':
+    
+    if style == '1_5':
         ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
         ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)
-    if style == 'all5':
+    if style == '1_3_5':
+        ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
+        ScreenObject.blit_scr_obj(arrow3, arrow3.location, blue_arrow)
+        ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)       
+    if style == '12345':
         ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
         ScreenObject.blit_scr_obj(arrow2, arrow2.location, blue_arrow)
         ScreenObject.blit_scr_obj(arrow3, arrow3.location, blue_arrow)
         ScreenObject.blit_scr_obj(arrow4, arrow4.location, blue_arrow)
         ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)
-    if style == '2and4':
+    if style == '2_4':
         ScreenObject.blit_scr_obj(arrow2, arrow2.location, blue_arrow)
         ScreenObject.blit_scr_obj(arrow4, arrow4.location, blue_arrow)
 
@@ -497,15 +489,15 @@ def choose_game(background):
         greet = TextObject(item, (x, y), 60, white)
         TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
         y = y + 70
-    place_arrows('2and4')
+    place_arrows('2_4')
     pygame.display.flip()
     game_to_play = key_press()
     # make the game object and call it curr_game
     if game_to_play == 1:
-        curr_game = TextGame(g2_bkg, qna, [0,0], 5)
+        curr_game = TextGame(g2_bkg.surface, qna, [0,0], 3)
         print('dolphin selected')
     if game_to_play == 2:
-        curr_game = PictGame(g1_bkg, picture, [0,0], 2)
+        curr_game = PictGame(g1_bkg.surface, picture, [0,0], 5)
     return curr_game  
 # TEXT GAME =====================
 def text_game():
@@ -518,6 +510,7 @@ def text_game():
     # ||||||||| 5 TURNS ||||||||||||||||||||||||
     for index in turn_picks:
         display.blit(curr_game.background, (0,0))
+        place_arrows('12345')
         
         #print(curr_game.just_q[index])
         turn_ans = (curr_game.just_a[index])
@@ -565,22 +558,25 @@ def text_game():
         print('Score is now ',str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' wrong' )
 # PICTURE GAME =================
 def picture_game():
+    display.blit(curr_game.all_picts[0], (200,300))  
+    display.blit(curr_game.all_picts[1], (600,300))  
+    display.blit(curr_game.all_picts[2], (900,300))  
+    display.blit(curr_game.all_picts[3], (1200,300))
+    place_arrows('1_3_5')
+    pygame.display.flip()  
     pass
 
 
 # GAME LOOP -------
 def game_loop():
     global curr_game
-    free_cash(game_choice)
+    free_cash(game_choice.surface)
     # game must be created first
-    curr_game = choose_game(finalscore)
+    curr_game = choose_game(finalscore.surface)
     
     if type(curr_game).__name__ == 'PictGame':
-        display.blit(curr_game.all_picts[10], (200,300))  
-        display.blit(curr_game.all_picts[11], (600,300))  
-        display.blit(curr_game.all_picts[2], (900,300))  
-        display.blit(curr_game.all_picts[3], (1200,300))  
-        pygame.display.flip()
+        picture_game()
+        
         sleep(4)
         print(type(curr_game).__name__)
         print(curr_game.all_picts)
