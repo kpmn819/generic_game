@@ -571,6 +571,7 @@ def text_game():
             print('wrong')
             curr_game.score[1] = curr_game.score[1] + 1
         print('Score is now ',str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' wrong' )
+
 # PICTURE GAME =================
 def picture_game():
     # get 5 indexes for our turns
@@ -580,26 +581,28 @@ def picture_game():
         answer_picture = curr_game.all_picts[turn_picks[q]][1]
         # need to get a random set of 2 other indexes the don't equal hero
         wrong_a = answer_picture
-        wrong_b = answer_picture
         shuffle_answers = []
         shuffle_answers.append(answer_picture)
         # pick something other than the hero
         for i in range(0,5):
+            #     don't duplicate right answer   don't repeat any
             while (answer_picture == wrong_a) or (wrong_a in shuffle_answers):
                 index = sample(range( 0, len(curr_game.all_picts)), 1)[0]
                 wrong_a = curr_game.all_picts[index][1]
             shuffle_answers.append(wrong_a)
-        '''while answer_picture == wrong_b:
-            index = sample(range( 0, len(curr_game.all_picts)), 1)[0]
-            wrong_b = curr_game.all_picts[index][1]'''
-        #shuffle_answers = [answer_picture, wrong_a, wrong_b]
+        
+        ScreenObject.blit_scr_obj(curr_game,[0,0], curr_game.background)
+        #shuffle_answer order
         shuffle(shuffle_answers)
-        display.blit(question_picture, (840,40))  
-        display.blit(shuffle_answers[0], (80,600)) 
-        display.blit(shuffle_answers[1], (430,600))  
+        display.blit(question_picture, (810,40))
+        x = 190
+        for i in range(0,5):
+            display.blit(shuffle_answers[i], (x,600)) 
+            x += 310
+        '''display.blit(shuffle_answers[1], (430,600))  
         display.blit(shuffle_answers[2], (810,600))
         display.blit(shuffle_answers[3], (1200,600))
-        display.blit(shuffle_answers[4], (1500,600))
+        display.blit(shuffle_answers[4], (1500,600))'''
         pygame.display.flip()
         resp = key_press()
         print(resp)
