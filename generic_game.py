@@ -265,6 +265,7 @@ def init():
     #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
+    global gpath
     gpath = 'graphics/'
 
     g1_open_pict = gpath + 'game_1.jpg'
@@ -404,9 +405,14 @@ def place_arrows(style):
 def score_process(curr_game, right):
     if right:
         curr_game.score[0] += 1
-        # pick a pos response
+        turn_resp = str(correct[randrange(len(correct))][0])
+        resp_msg = TextObject(turn_resp, (900, 700), 60, white)
     else:
         curr_game.score[1] += 1
+        turn_resp = str(wrong[randrange(len(wrong))][0])
+        resp_msg = TextObject(turn_resp, (900, 700), 60, white)
+        
+        
         # pick a negative response
     ScreenObject.blit_scr_obj(curr_game, [0,0], curr_game.background)
     # display response and score
@@ -415,6 +421,7 @@ def score_process(curr_game, right):
         score_msg = TextObject(message,(900,500), 60, white)
         ScreenObject.blit_scr_obj(curr_game,(0,0),curr_game.background)
         TextObject.font_process(score_msg)
+        TextObject.font_process(resp_msg)
         pygame.display.flip()
         sleep(3)
     
