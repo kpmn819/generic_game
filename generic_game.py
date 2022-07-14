@@ -83,18 +83,6 @@ class PictGame():
             self.all_picts.append(temp_surface)
             all_files.append(temp)
         # we now have a list of pairs of surfaces ready to be blitted
-      
-
-
-            
-
-            # for some reason this generates a one dimensional list
-
-            #file_name = 'graphics/' + self.qu_ans[x][1]
-            #self.all_picts.append(pygame.image.load(file_name).convert_alpha())
-        
-        # so thoretically we have a list with all the picture objecs
-        
         
             
 # !!!!!!!!!!!!
@@ -411,9 +399,6 @@ def score_process(curr_game, right):
         curr_game.score[1] += 1
         turn_resp = str(wrong[randrange(len(wrong))][0])
         resp_msg = TextObject(turn_resp, (900, 700), 60, white)
-        
-        
-        # pick a negative response
     ScreenObject.blit_scr_obj(curr_game, [0,0], curr_game.background)
     # display response and score
     if curr_game.score[0] + curr_game.score[1] < 5:
@@ -645,6 +630,11 @@ def picture_game():
         print(resp)
         
 # ^^^^^^^^^^^^^^^  PICTURE GAME ^^^^^^^^^^^^^^^^^^       
+
+#================= FINAL SCORE ===================
+def final_score():
+    pass
+#^^^^^^^^^^^^^^^^^ FINAL SCORE ^^^^^^^^^^^^^^^^^^^
 
 
 # GAME LOOP -------
