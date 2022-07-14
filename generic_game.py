@@ -143,13 +143,15 @@ class ScreenObject():
     def __init__(self, location):
         self.location = location
     def blit_scr_obj(self, location, image):
-        display.blit(image, location) 
+        display.blit(image, location)
+
 class GraphicObject(ScreenObject):
     def __init__(self, location, file_name):
         self.file_name = file_name
         super().__init__(location)
     # load into pygame 
         self.surface = pygame.image.load(file_name).convert_alpha()
+
 class TextObject(ScreenObject):
     def __init__(self, text, location, size, color, width=None, font=None):
         self.text = text
@@ -159,10 +161,10 @@ class TextObject(ScreenObject):
         self.width = width
         super().__init__(location)
 
-    def parse_string(self, text, width):    
+    def parse_string(self):    
         # this handy util breaks up long lines for us
 
-        lines_list = textwrap.wrap(text, width)        
+        lines_list = textwrap.wrap(self.text, self.width)        
 	# will return any number of lines of final_length
         return lines_list 
     #----------- font process
@@ -497,7 +499,7 @@ def choose_game(background):
     y = y + 90
     greeting = 'See if you can match dolphin dorsal fins'
     greet = TextObject(greeting, (image_centerx, 300), 80, white, 30)
-    parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
+    parsed_lines = TextObject.parse_string(greet)
     for item in parsed_lines:
         greet = TextObject(item, (x, y), 60, white)
         TextObject.font_process(greet)
@@ -511,7 +513,7 @@ def choose_game(background):
     y = y + 90
     greeting = 'Answer some questions about what you learned on your tour'
     greet = TextObject(greeting, (x, y), 80, white, 30)
-    parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
+    parsed_lines = TextObject.parse_string(greet)
     for item in parsed_lines:
         greet = TextObject(item, (x, y), 60, white)
         TextObject.font_process(greet)
@@ -552,7 +554,7 @@ def text_game():
         x = 990
         y = 100
         question = TextObject(curr_game.just_q[index], [990,100], 80, white, 30)
-        q_parsed = TextObject.parse_string(question, question.text, question.width)
+        q_parsed = TextObject.parse_string(question)
         for item in q_parsed:
             question.location = [x,y]
             question.text = item
@@ -564,7 +566,7 @@ def text_game():
         for i in range(0,3):
             y = 500
             answer = TextObject(display_list[i], [x,y], 50, white, 30)
-            q_parsed = TextObject.parse_string(answer, answer.text, answer.width)
+            q_parsed = TextObject.parse_string(answer)
             print(q_parsed)
             for item in q_parsed:
                 question.location = [x,y]
