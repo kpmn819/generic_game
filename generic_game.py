@@ -410,9 +410,12 @@ def score_process(curr_game, right):
         # pick a negative response
     ScreenObject.blit_scr_obj(curr_game, [0,0], curr_game.background)
     # display response and score
-    message = 'Your score is ', str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' Wrong'
-    score_msg = TextObject(message, [0,0], 60, white)
+    message = 'Your score is ' + str(curr_game.score[0]) + ' Right '+ str(curr_game.score[1]) + ' Wrong'
+    score_msg = TextObject(message,(900,500), 60, white)
+    ScreenObject.blit_scr_obj(curr_game,(0,0),curr_game.background)
     TextObject.font_process(score_msg)
+    pygame.display.flip()
+    sleep(3)
     
 
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -587,10 +590,12 @@ def text_game():
         resp = str(key_press())
         if display_list[int(resp)-1] == turn_ans[0]:
             print('got it')
-            curr_game.score[0] = curr_game.score[0] + 1
+            score_process(curr_game, True)
+            #curr_game.score[0] = curr_game.score[0] + 1
         else:
             print('wrong')
-            curr_game.score[1] = curr_game.score[1] + 1
+            score_process(curr_game, False)
+            #curr_game.score[1] = curr_game.score[1] + 1
         print('Score is now ',str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' wrong' )
 #^^^^^^^^^^^^^^^^^^ TEXT GAME ^^^^^^^^^^^^^^^^^^^^
 
