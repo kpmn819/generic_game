@@ -410,12 +410,13 @@ def score_process(curr_game, right):
         # pick a negative response
     ScreenObject.blit_scr_obj(curr_game, [0,0], curr_game.background)
     # display response and score
-    message = 'Your score is ' + str(curr_game.score[0]) + ' Right '+ str(curr_game.score[1]) + ' Wrong'
-    score_msg = TextObject(message,(900,500), 60, white)
-    ScreenObject.blit_scr_obj(curr_game,(0,0),curr_game.background)
-    TextObject.font_process(score_msg)
-    pygame.display.flip()
-    sleep(3)
+    if curr_game.score[0] + curr_game.score[1] < 5:
+        message = 'Your score is ' + str(curr_game.score[0]) + ' Right '+ str(curr_game.score[1]) + ' Wrong'
+        score_msg = TextObject(message,(900,500), 60, white)
+        ScreenObject.blit_scr_obj(curr_game,(0,0),curr_game.background)
+        TextObject.font_process(score_msg)
+        pygame.display.flip()
+        sleep(3)
     
 
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -611,7 +612,7 @@ def picture_game():
         shuffle_answers = []
         shuffle_answers.append(answer_picture)
         # pick something other than the hero
-        for i in range(0,5):
+        for i in range(0,4):
             #     don't duplicate right answer   don't repeat any
             while (answer_picture == wrong_a) or (wrong_a in shuffle_answers):
                 index = sample(range( 0, len(curr_game.all_picts)), 1)[0]
@@ -623,14 +624,19 @@ def picture_game():
         shuffle(shuffle_answers)
         display.blit(question_picture, (810,40))
         x = 190
+        # put answers on screen
         for i in range(0,5):
             display.blit(shuffle_answers[i], (x,600)) 
             x += 310
         place_arrows('12345')
         pygame.display.flip()
         resp = key_press()
-
+        if answer_picture == shuffle_answers[resp -1]:
+            score_process(curr_game, True)
+        else:
+            score_process(curr_game, False)
         print(resp)
+        
 # ^^^^^^^^^^^^^^^  PICTURE GAME ^^^^^^^^^^^^^^^^^^       
 
 
