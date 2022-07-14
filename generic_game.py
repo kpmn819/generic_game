@@ -4,6 +4,7 @@
 # makes extensive use of pygame to blit the screen
 
 from random import randrange, shuffle, random, sample
+
 #from random import sample
 from time import sleep, time
 import sys, pygame, os
@@ -177,28 +178,30 @@ class TextObject(ScreenObject):
 	# will return any number of lines of final_length
         return lines_list 
     #----------- font process
-    def font_process(self, text, location, size, color):
+    def font_process(self):
         global display
-        x = location[0]
-        y = location[1]
+        #x = location[0]
+        #y = location[1]
+        x = self.location[0]
+        y = self.location[1]
         # attempt to combine all font operations into one call that
         # renders and blits the text
         black = (0,0,0)
         d_shadow = 3
         # create a font object from a system font
-        font = pygame.font.SysFont('FreeSans', size, True, False)
+        font = pygame.font.SysFont('FreeSans', self.size, True, False)
         # render font on a new surface font.render(text, antialias, bkgnd = none)
-        render_message = font.render(text, True, color)
+        render_message = font.render(self.text, True, self.color)
         # render drop shadow in black
         if d_shadow:
-            render_ds = font.render(text, True, black)
+            render_ds = font.render(self.text, True, black)
             render_ds_rect = render_message.get_rect()
         # attempt to center works
         # create a rectangular object for the text surface object
         render_msg_rect = render_message.get_rect()
         # center in x, use y from call
         #render_msg_rect.center = (image_centerx, y) # (x,y) x = screen center
-        render_msg_rect.center = location # (x,y) x = screen center
+        render_msg_rect.center = self.location # (x,y) x = screen center
         # blit drop shadow then text to image
         if d_shadow:
             #render_ds_rect.center = (image_centerx + d_shadow, y + d_shadow)
@@ -387,18 +390,30 @@ def key_press():
     return x
 # Place arrows and blit
 def place_arrows(style):
-    if style == 'outer2':
+    if  '1' in style:
         ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
-        ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)
-    if style == 'all5':
-        ScreenObject.blit_scr_obj(arrow1, arrow1.location, blue_arrow)
+    if  '2' in style:
         ScreenObject.blit_scr_obj(arrow2, arrow2.location, blue_arrow)
+    if  '3' in style:
         ScreenObject.blit_scr_obj(arrow3, arrow3.location, blue_arrow)
+    if  '4' in style:
         ScreenObject.blit_scr_obj(arrow4, arrow4.location, blue_arrow)
+    if  '5' in style:
         ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)
-    if style == '2and4':
-        ScreenObject.blit_scr_obj(arrow2, arrow2.location, blue_arrow)
-        ScreenObject.blit_scr_obj(arrow4, arrow4.location, blue_arrow)
+
+def score_process(curr_game, right):
+    if right:
+        curr_game.score[0] += 1
+        # pick a pos response
+    else:
+        curr_game.score[1] += 1
+        # pick a negative response
+    ScreenObject.blit_scr_obj(curr_game, [0,0], curr_game.background)
+    # display response and score
+    message = 'Your score is ', str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' Wrong'
+    score_msg = TextObject(message, [0,0], 60, white)
+    TextObject.font_process(score_msg)
+    
 
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -417,19 +432,19 @@ def free_cash(background):
     #create the object first can reuse object since blit stores it
     greeting = 'Press Free Play'
     greet = TextObject(greeting, (image_centerx, 200), 60, white )
-    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    TextObject.font_process(greet)
     greeting = 'or'
     greet = TextObject('or',(image_centerx, 280), 60, white)
-    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    TextObject.font_process(greet)
     greeting = 'Make a Donation and get a chance to win a Bonehenge Prize'
     greet = TextObject(greeting, (image_centerx, 360), 60, white )
-    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    TextObject.font_process(greet)
     greeting = 'Prizes are awarded for 5 of 5 or 4 of 5 correct answers'
     greet = TextObject(greeting, (image_centerx,800), 30, white )
-    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    TextObject.font_process(greet)
     greeting = 'If you win you will see your winner code word'
     greet = TextObject(greeting, (image_centerx,850), 30, white )
-    TextObject.font_process(greet, greet.text, greet.location,greet.size, greet.color)
+    TextObject.font_process(greet)
     pygame.display.flip()
     
     
@@ -468,18 +483,18 @@ def free_cash(background):
 
 
 
-# CHOOSE GAME ------
+#================ CHOOSE GAME ====================
 def choose_game(background):
     global curr_game
     bakgnd = ScreenObject((0,0))
     ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
     greeting = 'Please select a game to play'
     greet = TextObject(greeting, (image_centerx, 300), 80, white)
-    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    TextObject.font_process(greet)
     # first the left side
     greeting = 'Photo-ID Challenge'
     greet = TextObject(greeting, (430, 600), 70, white)
-    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    TextObject.font_process(greet)
     x = 430
     y = 600
     # chop these up
@@ -489,21 +504,21 @@ def choose_game(background):
     parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
     for item in parsed_lines:
         greet = TextObject(item, (x, y), 60, white)
-        TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+        TextObject.font_process(greet)
         y = y + 70
     # now the right side
     x = 1430
     y = 600
     greeting = 'Bonehenge Tour Quiz'
     greet = TextObject(greeting, (x, y), 80, white)
-    TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+    TextObject.font_process(greet)
     y = y + 90
     greeting = 'Answer some questions about what you learned on your tour'
     greet = TextObject(greeting, (x, y), 80, white, 30)
     parsed_lines = TextObject.parse_string(greet,greet.text,greet.width)
     for item in parsed_lines:
         greet = TextObject(item, (x, y), 60, white)
-        TextObject.font_process(greet, greet.text, greet.location, greet.size, greet.color)
+        TextObject.font_process(greet)
         y = y + 70
     place_arrows('2and4')
     pygame.display.flip()
@@ -515,7 +530,9 @@ def choose_game(background):
     if game_to_play == 2:
         curr_game = PictGame(g1_bkg, picture, [0,0], 2)
     return curr_game  
-# TEXT GAME =====================
+# ^^^^^^^^^^^^^^^^^^^^ CHOOSE GAME ^^^^^^^^^^^^^^^^^^^
+
+#==================== TEXT GAME =====================
 def text_game():
         # get 5 (number of turns) 
     turn_picks = sample(range( 0, len(curr_game.just_q)), 5)
@@ -541,7 +558,9 @@ def text_game():
         question = TextObject(curr_game.just_q[index], [990,100], 80, white, 30)
         q_parsed = TextObject.parse_string(question, question.text, question.width)
         for item in q_parsed:
-            TextObject.font_process(question, item, [x,y], question.size, question.color)
+            question.location = [x,y]
+            question.text = item
+            TextObject.font_process(question)
             y += 70
         # left answer
         x = 320
@@ -552,7 +571,9 @@ def text_game():
             q_parsed = TextObject.parse_string(answer, answer.text, answer.width)
             print(q_parsed)
             for item in q_parsed:
-                TextObject.font_process(answer, item, [x,y], answer.size, answer.color)
+                question.location = [x,y]
+                question.text = item
+                TextObject.font_process(answer)
                 y += 70
             x += 640
 
@@ -571,8 +592,9 @@ def text_game():
             print('wrong')
             curr_game.score[1] = curr_game.score[1] + 1
         print('Score is now ',str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' wrong' )
+#^^^^^^^^^^^^^^^^^^ TEXT GAME ^^^^^^^^^^^^^^^^^^^^
 
-# PICTURE GAME =================
+#================== PICTURE GAME =================
 def picture_game():
     # get 5 indexes for our turns
     turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
@@ -599,14 +621,12 @@ def picture_game():
         for i in range(0,5):
             display.blit(shuffle_answers[i], (x,600)) 
             x += 310
-        '''display.blit(shuffle_answers[1], (430,600))  
-        display.blit(shuffle_answers[2], (810,600))
-        display.blit(shuffle_answers[3], (1200,600))
-        display.blit(shuffle_answers[4], (1500,600))'''
+        place_arrows('12345')
         pygame.display.flip()
         resp = key_press()
+
         print(resp)
-        
+# ^^^^^^^^^^^^^^^  PICTURE GAME ^^^^^^^^^^^^^^^^^^       
 
 
 # GAME LOOP -------
