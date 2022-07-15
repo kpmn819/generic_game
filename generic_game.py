@@ -96,13 +96,11 @@ class Port():
             if os.name != 'nt':
                 GPIO.setup(p_num, GPIO.IN, pull_up_down = GPIO.PUD_UP)
             else:
-                #print('input port not set')
                 pass
         else:
             if os.name != 'nt':
                 GPIO.setup(p_num, GPIO.OUT)
             else:
-                #print('output port not set')
                 pass
     def change_state(self):
         if not self.input:
@@ -137,6 +135,13 @@ class Port():
         if config == 'three_on':
             pass
 
+class Button():
+    def __init__(self, in_port, in_stat, out_port, out_stat):
+        self.in_port = in_port
+        self.in_stat = in_stat
+        self.out_port = out_port
+        self.out_stat = out_stat
+        
 
 # !!!!!!!!!!!!!
 class ScreenObject():
@@ -339,7 +344,6 @@ def get_file(list_file, col_count):
                     # this is a 0 based list of lists
                     # access questions_list[q# - 1][column]
                 line_count += 1
-            #print(f'Processed {line_count} lines.')
             row_count = line_count - 1
             # returns lists within lists acces via [list of items][items]
             return [cvs_list]
@@ -532,9 +536,9 @@ def choose_game(background):
 
 #==================== TEXT GAME =====================
 def text_game():
-        # get 5 (number of turns) 
+    # get 5 (number of turns)
+    green = (0, 255, 0) 
     turn_picks = sample(range( 0, len(curr_game.just_q)), 5)
-    print(turn_picks)# a list of index numbers for q & a
     curr_game.score = [0,0]
 
     # take turns
@@ -542,13 +546,10 @@ def text_game():
     for index in turn_picks:
         display.blit(curr_game.background, (0,0))
         
-        #print(curr_game.just_q[index])
         turn_ans = (curr_game.just_a[index])
-        #print(turn_ans[0])
         # need to go through questions and randomize answers
         display_list = turn_ans[:] # make a copy
         shuffle(display_list)
-        print(display_list)
         # for each turn need to blit question and answers on screen
         # display the question
         x = 990
@@ -563,35 +564,38 @@ def text_game():
         # left answer
         x = 320
         y = 500
+        blit_x = []
         for i in range(0,3):
+            blit_x.append(x) # for use in later blit
             y = 500
-            answer = TextObject(display_list[i], [x,y], 50, white, 30)
+            answer = TextObject(display_list[i], [x,y], 50, white, 20)
             q_parsed = TextObject.parse_string(answer)
             print(q_parsed)
             for item in q_parsed:
-                question.location = [x,y]
-                question.text = item
+                answer.location = [x,y]
+                answer.text = item
                 TextObject.font_process(answer)
                 y += 70
             x += 640
 
-        # mid answer
-
-        #right answer
 
         pygame.display.flip()
         # have the lights right and wait for a response
         #resp = input('Select 1 2 or 3 ')
         resp = str(key_press())
+        # need to highlight correct in green and wrong in red
+        r_indx = display_list.index(turn_ans[0]) #gives index of right ans
+        hlt_ans = TextObject(turn_ans[0], [blit_x[r_indx], 500],50,green, 20)
+        print(r_indx)
         if display_list[int(resp)-1] == turn_ans[0]:
             print('got it')
             score_process(curr_game, True)
-            #curr_game.score[0] = curr_game.score[0] + 1
+            # need to blit the correct answer in green
         else:
             print('wrong')
             score_process(curr_game, False)
-            #curr_game.score[1] = curr_game.score[1] + 1
-        print('Score is now ',str(curr_game.score[0]), ' Right ', str(curr_game.score[1]), ' wrong' )
+            # need to blit wrong in red correct in green
+
 #^^^^^^^^^^^^^^^^^^ TEXT GAME ^^^^^^^^^^^^^^^^^^^^
 
 #================== PICTURE GAME =================
@@ -629,7 +633,7 @@ def picture_game():
             score_process(curr_game, True)
         else:
             score_process(curr_game, False)
-        print(resp)
+        
         
 # ^^^^^^^^^^^^^^^  PICTURE GAME ^^^^^^^^^^^^^^^^^^       
 
@@ -648,18 +652,13 @@ def game_loop():
     
     if type(curr_game).__name__ == 'PictGame':
         picture_game()
-     
-        
         print(type(curr_game).__name__)
-        print(curr_game.all_picts)
+        
     else:
-        print(curr_game.just_a)
-        print(curr_game.just_q)
         text_game()
     #display.blit(curr_game.all_picts[0], (100,100))  
     #pygame.display.flip()
     
-    #print(curr_game.num_ans)
     # curr_game returns a Game object with it's backround, 
     # question/answer file, (0,0)location, number of questions
 
