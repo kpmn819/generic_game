@@ -255,6 +255,8 @@ def init():
     red = (255, 0, 0)
     global blue
     blue = (0, 0, 255)
+    global green
+    green = (0, 255, 0)
     
     global display
     #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -383,6 +385,8 @@ def key_press():
                     x = 5
                     
     return x
+
+
 # Place arrows and blit
 def place_arrows(style):
     if  '1' in style:
@@ -537,7 +541,6 @@ def choose_game(background):
 #==================== TEXT GAME =====================
 def text_game():
     # get 5 (number of turns)
-    green = (0, 255, 0) 
     turn_picks = sample(range( 0, len(curr_game.just_q)), 5)
     curr_game.score = [0,0]
 
@@ -561,12 +564,12 @@ def text_game():
             question.text = item
             TextObject.font_process(question)
             qy_offset += 70
-        # left answer
+        # place answers
         ax_offset = 320
         ay_offset = 500
         blit_x = []
         for i in range(0,3):
-            blit_x.append(ax_offset) # for use in later blit
+            blit_x.append(ax_offset) # for use in later lookup
             ay_offset = 500
             answer = TextObject(display_list[i], [ax_offset,ay_offset], 50, white, 20)
             q_parsed = TextObject.parse_string(answer)
@@ -582,7 +585,7 @@ def text_game():
         # have the lights right and wait for a response
         # $$$$$$$$$ replace with button input polling
         resp = str(key_press())
-        # need to highlight correct in green and wrong in red
+        # need to highlight correct in green
         r_indx = display_list.index(turn_ans[0]) #gives index of right ans
         highlight_ans = TextObject(turn_ans[0], [blit_x[r_indx], 500],50,green, 20)
         h_parsed = TextObject.parse_string(highlight_ans)
@@ -593,17 +596,15 @@ def text_game():
             TextObject.font_process(highlight_ans)
             ay_offset += 70
         pygame.display.flip()
-        
 
-        print(r_indx)
+        # Right and Wrong answer processing
         if display_list[int(resp)-1] == turn_ans[0]:
             print('got it')
             resp_ans = True
-            # need to blit the correct answer in green
         else:
             print('wrong')
             resp_ans = False
-            # need to blit wrong in red correct in green
+            # need to blit wrong in red
             ax_offset = 320
             ay_offset = 500
             highlight_ans = TextObject(display_list[int(resp)-1],(blit_x[int(resp)-1],ay_offset),50,red,20)
@@ -642,19 +643,41 @@ def picture_game():
         #shuffle_answer order
         shuffle(shuffle_answers)
         display.blit(question_picture, (810,40))
+
+        blit_index = []
         x = 190
+        blit_index.append(x)
         # put answers on screen
+        ay = 600
         for i in range(0,5):
-            display.blit(shuffle_answers[i], (x,600)) 
+            display.blit(shuffle_answers[i], (x,ay)) 
             x += 310
+            blit_index.append(x)
+
         place_arrows('12345')
         pygame.display.flip()
         resp = key_press()
-        if answer_picture == shuffle_answers[resp -1]:
-            score_process(curr_game, True)
+        # correct answer highlited green nomatter what
+        glo_offset = 20
+        print('remove')
+        c_index = shuffle_answers.index(answer_picture)
+        c_glow = ScreenObject([blit_index[c_index]- glo_offset, ay-glo_offset])
+        ScreenObject.blit_scr_obj(c_glow, c_glow.location, green_glow)
+        pygame.display.flip()
+
+        if answer_picture == shuffle_answers[int(resp -1)]:
+            resp_ans = True
         else:
-            score_process(curr_game, False)
-        
+            # user answer highligted red if wrong
+            resp_ans = False
+            c_index = resp - 1
+            c_glow = ScreenObject([blit_index[c_index]- glo_offset, ay-glo_offset])
+            ScreenObject.blit_scr_obj(c_glow, c_glow.location, red_glow)
+            pygame.display.flip()
+        sleep(1.5)   
+            
+        score_process(curr_game, resp_ans)
+    
         
 # ^^^^^^^^^^^^^^^  PICTURE GAME ^^^^^^^^^^^^^^^^^^       
 
