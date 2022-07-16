@@ -552,40 +552,50 @@ def text_game():
         shuffle(display_list)
         # for each turn need to blit question and answers on screen
         # display the question
-        x = 990
-        y = 100
-        question = TextObject(curr_game.just_q[index], [990,100], 80, white, 30)
+        qx_offset = 990
+        qy_offset = 100
+        question = TextObject(curr_game.just_q[index], [qx_offset,qy_offset], 80, white, 30)
         q_parsed = TextObject.parse_string(question)
         for item in q_parsed:
-            question.location = [x,y]
+            question.location = [qx_offset,qy_offset]
             question.text = item
             TextObject.font_process(question)
-            y += 70
+            qy_offset += 70
         # left answer
-        x = 320
-        y = 500
+        ax_offset = 320
+        ay_offset = 500
         blit_x = []
         for i in range(0,3):
-            blit_x.append(x) # for use in later blit
-            y = 500
-            answer = TextObject(display_list[i], [x,y], 50, white, 20)
+            blit_x.append(ax_offset) # for use in later blit
+            ay_offset = 500
+            answer = TextObject(display_list[i], [ax_offset,ay_offset], 50, white, 20)
             q_parsed = TextObject.parse_string(answer)
             print(q_parsed)
             for item in q_parsed:
-                answer.location = [x,y]
+                answer.location = [ax_offset,ay_offset]
                 answer.text = item
                 TextObject.font_process(answer)
-                y += 70
-            x += 640
-
+                ay_offset += 70
+            ax_offset += 640
 
         pygame.display.flip()
         # have the lights right and wait for a response
-        #resp = input('Select 1 2 or 3 ')
+        # $$$$$$$$$ replace with button input polling
         resp = str(key_press())
         # need to highlight correct in green and wrong in red
         r_indx = display_list.index(turn_ans[0]) #gives index of right ans
-        hlt_ans = TextObject(turn_ans[0], [blit_x[r_indx], 500],50,green, 20)
+        highlight_ans = TextObject(turn_ans[0], [blit_x[r_indx], 500],50,green, 20)
+        h_parsed = TextObject.parse_string(highlight_ans)
+        y = 500
+        for item in h_parsed:
+            highlight_ans.location = [blit_x[r_indx],y]
+            highlight_ans.text = item
+            TextObject.font_process(highlight_ans)
+            y += 70
+            pygame.display.flip()
+        sleep(2)
+
+
         print(r_indx)
         if display_list[int(resp)-1] == turn_ans[0]:
             print('got it')
