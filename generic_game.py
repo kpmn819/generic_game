@@ -592,19 +592,29 @@ def text_game():
             highlight_ans.text = item
             TextObject.font_process(highlight_ans)
             y += 70
-            pygame.display.flip()
-        sleep(2)
-
+        pygame.display.flip()
+        
 
         print(r_indx)
         if display_list[int(resp)-1] == turn_ans[0]:
             print('got it')
-            score_process(curr_game, True)
+            #score_process(curr_game, True)
             # need to blit the correct answer in green
         else:
             print('wrong')
-            score_process(curr_game, False)
             # need to blit wrong in red correct in green
+            ax_offset = 320
+            ay_offset = 500
+            highlight_ans = TextObject(display_list[int(resp)-1],(blit_x[int(resp)-1],ay_offset),50,red,20)
+            h_parsed = TextObject.parse_string(highlight_ans)
+            for item in h_parsed:
+                highlight_ans.location = [blit_x[int(resp)-1],ay_offset]
+                highlight_ans.text = item
+                TextObject.font_process(highlight_ans)
+                ay_offset += 70
+            pygame.display.flip()
+            sleep(1)
+        score_process(curr_game, False)
 
 #^^^^^^^^^^^^^^^^^^ TEXT GAME ^^^^^^^^^^^^^^^^^^^^
 
