@@ -1,4 +1,17 @@
 
+#======== class example ==========
+class Something():
+	def __init__(self, somevar):
+		self.somevar = somevar
+	def print_added(self, another):
+		print(another)
+
+
+zow = Something('42')
+print(zow.somevar)
+zow.another = '99'
+print(zow.another)
+Something.print_added(zow,zow.another)
 
 # ///////////// ENUMERATE EXAMPLE ///////////////////
 users = ["Test User", "Real User 1", "Real User 2"]
@@ -56,3 +69,33 @@ our_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 chunk_size = 3
 chunked_list = [our_list[i:i+chunk_size] for i in range(0, len(our_list), chunk_size)]
 print(chunked_list)
+
+# /////////////////////////////// class + inheritence + caller /////////////////////////
+class ScreenObject():
+    def __init__(self, location):
+        
+        self.location = location    
+        
+class TextObject(ScreenObject):
+    def __init__(self, text, location, size, color, width=None, font=None):
+        self.text = text
+        self.font = font
+        self.size = size
+        self.color = color
+        self.width = width
+        super().__init__(location)
+
+    def parse_string(self, text, width):
+        print('parse string has' + text + ' '+ str(width))
+        # this handy util breaks up long lines for us
+        lines_list = textwrap.wrap(text, width)
+        
+	# will return any number of lines of final_length
+        return lines_list 
+
+stuff ='here is a really long line that will have to be compressed by our formatter'
+zow = TextObject(stuff, (200,300), 50, red)
+print(zow.color)
+zow.text =TextObject.parse_string(zow, stuff, 10)
+print(zow.text)
+# ///////////////////////////////////////////////////    

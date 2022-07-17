@@ -204,7 +204,15 @@ class TextObject(ScreenObject):
             display.blit(render_ds, render_ds_rect)
         display.blit(render_message, render_msg_rect)
         # no flip here up to the caller
-    
+        
+class SoundObject():
+    def __init__(self, file, volume):
+        self.file = file
+        self.volume = volume
+    def play_sound(self):
+        pygame.mixer.music.set_volume(self.volume)
+        pygame.mixer.music.load(gpath + self.file)
+        pygame.mixer.music.play()    
 # \\\\\\\\\\\\\\\\\\\\ END CLASSES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 def init():
     # set up the ports port#, input T/F, state T/F (optional)
