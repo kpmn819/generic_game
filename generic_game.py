@@ -290,11 +290,6 @@ def init():
     # path to sounds
     awefile = gpath + 'Awe.mp3'
     yayfile = gpath + 'Yay.mp3'
-    # audio files for final score
-    # had to convert a couple to mp3, pygame didn't like the wav version
-    final_audio = ('0_right.wav','1_right.wav','2_right.mp3','3_right.wav',
-                '4_right.mp3','5_right.wav')
-    final_vol = (.3,1,1,.5,1,1)
     
     # full 1920 x 1080 images for backgrounds
     global g1_bkg
