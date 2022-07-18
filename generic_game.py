@@ -4,8 +4,10 @@
 # makes extensive use of pygame to blit the screen
 
 from random import randrange, shuffle, random, sample
+from winsound import PlaySound
 # pull stuff from config file
 from config import white, black, green, red
+
 
 #from random import sample
 from time import sleep, time
@@ -226,20 +228,16 @@ def init():
     global image_centery
     image_centerx = 960
     image_centery = 540
-    light_1 = Port(24, False, True)
-    light_2 = Port(25, False, True)
-    light_3 = Port(12, False, False)
-    light_4 = Port(18, False, False)
-    light_5 = Port(14, False, False)
-    light_fp = Port(16,False, False)
+    # button(in port, in stat, out port, out stat)
+    button1 = Button(4, True, 24, True)
+    button2 = Button(17, True, 25, True)
+    button3 = Button(27, True, 12, True)
+    button4 = Button(22, True, 18, True)
+    button5 = Button(5, True, 14, True)
+    button_free = Button(13, True, 16, True)
+    button_pay = Button(26, True, 16, True)
 
-    butn_1 = Port(4, True, False)
-    butn_2 = Port(17, True, False)
-    butn_3 = Port(27, True, False)
-    butn_4 = Port(22, True, False)
-    butn_5 = Port(5, True, False)
-    butn_free = Port(13, True, False)
-    butn_pay = Port(26, True, False)
+
     # make some arrow objects
     global arrow1
     arrow1 = ScreenObject((15, 890))
@@ -289,6 +287,8 @@ def init():
     # path to sounds
     awefile = gpath + 'Awe.mp3'
     yayfile = gpath + 'Yay.mp3'
+    global yay
+    yay = SoundObject('yay.mp3', .3)
     
     # full 1920 x 1080 images for backgrounds
     global g1_bkg
@@ -431,7 +431,7 @@ def free_cash(background):
     if they put in some money sets global variables'''
     # display rules and wait for input
     global free
-    global win
+    #global win
     global display
     bakgnd = ScreenObject((0,0))
     ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
@@ -460,6 +460,11 @@ def free_cash(background):
     while True:
         sleep(.05)
         selection = key_press()
+        if selection == 1:
+            SoundObject.play_sound(yay)
+            free = False
+        else:
+            free = True
         print(selection)
         break
         '''if GPIO.input(portList2[1]) == GPIO.LOW:
@@ -535,7 +540,9 @@ def choose_game(background):
     if game_to_play == 2:
         curr_game = PictGame('dolphin',g1_bkg, get_file('picture.csv', 2)[0], [0,0], 7)
     if game_to_play == 3:
-        curr_game = TextGame('stupid',g2_bkg, get_file('another_text.csv', 4)[0], [0,0], 5)        
+        curr_game = TextGame('stupid',g2_bkg, get_file('another_text.csv', 4)[0], [0,0], 5)
+    curr_game.free = free # True for free False for donation this is an add on
+    print(curr_game.free)        
     pinball = SoundObject('pinball-start.mp3', .3)
     SoundObject.play_sound(pinball)
     sleep(2.5)
