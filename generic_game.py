@@ -399,6 +399,25 @@ def place_arrows(style):
     if  '5' in style:
         ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)
 
+# gets a list of intro statements and puts them on screen
+def picture_intro(curr_game):
+    # put up the game intro
+    intro = get_file(curr_game.name + '_intro.csv', 1)[0]
+    bkg = ScreenObject([0,0])
+    ScreenObject.blit_scr_obj(bkg, bkg.location, curr_game.background)
+    text_y = 100
+    for i in range(0, len(intro)):
+        intro_display(intro[i], text_y)
+        text_y += 70
+    pygame.display.flip()
+    sleep(4)
+
+def intro_display(intro_line, y):
+    #font_process(60, greeting, white, image_centerx, 100)
+    message = TextObject(str(intro_line[0]), [image_centerx, y], 60, white )
+    TextObject.font_process(message)
+
+
 def score_process(curr_game, right):
     
     if right:
@@ -639,6 +658,7 @@ def text_game():
 def picture_game():
     wrong_sound = SoundObject('downer.mp3', .2)
     right_sound = SoundObject('quick-win.mp3', .3)
+    picture_intro(curr_game)
     # get 5 indexes for our turns
     turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
     for q in range(0,5):
