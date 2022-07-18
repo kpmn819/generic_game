@@ -4,7 +4,8 @@
 # makes extensive use of pygame to blit the screen
 
 from random import randrange, shuffle, random, sample
-
+# pull stuff from config file
+from config import white, black, green, red
 #from random import sample
 from time import sleep, time
 import sys, pygame, os
@@ -34,7 +35,8 @@ import timeout_decorator
 # //////////////////  CLASSES ///////////////////////////////////////////
 # !!!!!!!!!!!
 class TextGame():
-    def __init__(self, background, qu_ans, score, num_ans, reward= None):
+    def __init__(self, name, background, qu_ans, score, num_ans, reward= None):
+        self.name = name
         self.background = background
         self.qu_ans = qu_ans # all of the questions and answers
         self.score = score
@@ -61,7 +63,8 @@ class TextGame():
  # ============ end of Game class methods =============== 
  # ============ start PictGame class =========================
 class PictGame():
-    def __init__(self, background, qu_ans, score, num_ans, reward= None): 
+    def __init__(self, name, background, qu_ans, score, num_ans, reward= None): 
+        self.name = name
         self.background = background
         self.qu_ans = qu_ans # a list of tuples
         # like this (image 1a, image 1b)
@@ -215,6 +218,8 @@ class SoundObject():
         pygame.mixer.music.load(gpath + self.file)
         pygame.mixer.music.play()    
 # \\\\\\\\\\\\\\\\\\\\ END CLASSES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+# /////////////// INITIALIZE RUN ONCE ////////////////////////////
 def init():
     # set up the ports port#, input T/F, state T/F (optional)
     global image_centerx
@@ -256,16 +261,7 @@ def init():
     screen_height = 1080
     bgColor = (0,0,0)
     size = (screen_width, screen_height)
-    global white 
-    white = (255, 255, 255)
-    global black
-    black = (0, 0, 0)
-    global red
-    red = (255, 0, 0)
-    global blue
-    blue = (0, 0, 255)
-    global green
-    green = (0, 255, 0)
+    
     
     global display
     #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -334,6 +330,8 @@ def init():
     wrong = get_file('wrong_resp.csv', 1)[0]
     global picture
     picture = get_file('picture.csv', 2)[0]
+#\\\\\\\\\\\\\\\\\\\ INITIALIZE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 # /////////////////// START UTILITY METHODS ////////////////////////
 def get_file(list_file, col_count):
     # now a more generic reader that can take any number of columns
@@ -544,10 +542,10 @@ def choose_game(background):
     game_to_play = key_press()
     # make the game object and call it curr_game
     if game_to_play == 1:
-        curr_game = TextGame(g2_bkg, qna, [0,0], 5)
+        curr_game = TextGame('dolphin',g2_bkg, qna, [0,0], 5)
         print('dolphin selected')
     if game_to_play == 2:
-        curr_game = PictGame(g1_bkg, picture, [0,0], 2)
+        curr_game = PictGame('bonehenge',g1_bkg, picture, [0,0], 2)
     pinball = SoundObject('pinball-start.mp3', .3)
     SoundObject.play_sound(pinball)
     sleep(2.5)

@@ -12,6 +12,7 @@ print(zow.somevar)
 zow.another = '99'
 print(zow.another)
 Something.print_added(zow,zow.another)
+#\\\\\\\\\ class example \\\\\\\\\\\\\\\
 
 # ///////////// ENUMERATE EXAMPLE ///////////////////
 users = ["Test User", "Real User 1", "Real User 2"]
