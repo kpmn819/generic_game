@@ -311,21 +311,11 @@ def init():
     red_glow = pygame.image.load(r_gl).convert_alpha()
     global gray_glow
     gray_glow = pygame.image.load(gr_gl).convert_alpha()
-    # set path name to graphics and sound files here ///////
-
-    # make picture files objects for pygame here ////////
-
-    # load picture objects into pygame here ///////
     # get file data
     global correct
     correct = get_file('right_resp.csv', 1)[0]
-    #correct = correct[0]
-    global qna
-    qna = get_file('qna_pool.csv', 4)[0]
     global wrong
     wrong = get_file('wrong_resp.csv', 1)[0]
-    global picture
-    picture = get_file('picture.csv', 2)[0]
 #\\\\\\\\\\\\\\\\\\\ INITIALIZE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 # /////////////////// START UTILITY METHODS ////////////////////////
@@ -542,10 +532,10 @@ def choose_game(background):
     game_to_play = key_press()
     # make the game object and call it curr_game
     if game_to_play == 1:
-        curr_game = TextGame('dolphin',g2_bkg, qna, [0,0], 5)
+        curr_game = TextGame('bonehenge',g2_bkg, get_file('qna_pool.csv', 4)[0], [0,0], 5)
         print('dolphin selected')
     if game_to_play == 2:
-        curr_game = PictGame('bonehenge',g1_bkg, picture, [0,0], 2)
+        curr_game = PictGame('dolphin',g1_bkg, get_file('picture.csv', 2)[0], [0,0], 2)
         
     pinball = SoundObject('pinball-start.mp3', .3)
     SoundObject.play_sound(pinball)
