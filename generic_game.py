@@ -15,6 +15,7 @@ if os.name == 'nt':
 else:
     import RPi.GPIO as GPIO
     GPIO.setmode(GPIO.BCM)
+    
 import pygame.font
 import os
 # code to use comma seperated values
@@ -271,7 +272,10 @@ def init():
     display = pygame.display.set_mode((1920,1080))
     # assign I/O ports here ////////////
     global gpath
-    gpath = 'graphics/'
+    if os.name == 'nt':
+        gpath = 'graphics/'
+    else:
+        gpath = '/home/pi/My-Code/Dolphin-Project/graphics/'
 
     g1_open_pict = gpath + 'game_1.jpg'
     g2_open_pict = gpath + 'game_2.jpg'
@@ -409,6 +413,7 @@ def place_arrows(style):
         ScreenObject.blit_scr_obj(arrow5, arrow5.location, blue_arrow)
 
 def score_process(curr_game, right):
+    
     if right:
         curr_game.score[0] += 1
         turn_resp = str(correct[randrange(len(correct))][0])
@@ -543,11 +548,16 @@ def choose_game(background):
         print('dolphin selected')
     if game_to_play == 2:
         curr_game = PictGame(g1_bkg, picture, [0,0], 2)
+    pinball = SoundObject('pinball-start.mp3', .3)
+    SoundObject.play_sound(pinball)
+    sleep(2.5)
     return curr_game  
 # ^^^^^^^^^^^^^^^^^^^^ CHOOSE GAME ^^^^^^^^^^^^^^^^^^^
 
 #==================== TEXT GAME =====================
 def text_game():
+    wrong_sound = SoundObject('downer.mp3', .2)
+    right_sound = SoundObject('quick-win.mp3', .3)
     # get 5 (number of turns)
     turn_picks = sample(range( 0, len(curr_game.just_q)), 5)
     curr_game.score = [0,0]
@@ -609,9 +619,11 @@ def text_game():
         if display_list[int(resp)-1] == turn_ans[0]:
             print('got it')
             resp_ans = True
+            SoundObject.play_sound(right_sound)
         else:
             print('wrong')
             resp_ans = False
+            SoundObject.play_sound(wrong_sound)
             # need to blit wrong in red
             ax_offset = 320
             ay_offset = 500
@@ -630,6 +642,8 @@ def text_game():
 
 #================== PICTURE GAME =================
 def picture_game():
+    wrong_sound = SoundObject('downer.mp3', .2)
+    right_sound = SoundObject('quick-win.mp3', .3)
     # get 5 indexes for our turns
     turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
     for q in range(0,5):
@@ -667,7 +681,6 @@ def picture_game():
         resp = key_press()
         # correct answer highlited green nomatter what
         glo_offset = 20
-        print('remove')
         c_index = shuffle_answers.index(answer_picture)
         c_glow = ScreenObject([blit_index[c_index]- glo_offset, ay-glo_offset])
         ScreenObject.blit_scr_obj(c_glow, c_glow.location, green_glow)
@@ -675,9 +688,12 @@ def picture_game():
 
         if answer_picture == shuffle_answers[int(resp -1)]:
             resp_ans = True
+            SoundObject.play_sound(right_sound)
+
         else:
             # user answer highligted red if wrong
             resp_ans = False
+            SoundObject.play_sound(wrong_sound)
             c_index = resp - 1
             c_glow = ScreenObject([blit_index[c_index]- glo_offset, ay-glo_offset])
             ScreenObject.blit_scr_obj(c_glow, c_glow.location, red_glow)
@@ -690,7 +706,23 @@ def picture_game():
 # ^^^^^^^^^^^^^^^  PICTURE GAME ^^^^^^^^^^^^^^^^^^       
 
 #================= FINAL SCORE ===================
-def final_score():
+def final_score(score):
+    f_score_sounds = ['0_right.wav','1_right.wav','2_right.mp3','3_right.wav',
+                       '4_right.mp3', '5_right.wav']
+    f_score_vol = [.3, 1, 1, .5, 1, 1]
+    final_sound = SoundObject(f_score_sounds[score[0]], f_score_vol[score[1]])
+    SoundObject.play_sound(final_sound)
+    # put up background and text
+    bkg = ScreenObject([0,0])
+    ScreenObject.blit_scr_obj(bkg, [0,0], finalscore)
+    message = 'Final Score'
+    msg = TextObject(message, [image_centerx, image_centery], 80, white)
+    TextObject.font_process(msg)
+    message = str(score[0]) + ' Right  ' + str(score[1]) + ' Wrong'
+    msg = TextObject(message, [image_centerx, image_centery + 90], 80, white)
+    TextObject.font_process(msg)
+    pygame.display.flip()
+    sleep(4)
     pass
 #^^^^^^^^^^^^^^^^^ FINAL SCORE ^^^^^^^^^^^^^^^^^^^
 
@@ -698,6 +730,7 @@ def final_score():
 # GAME LOOP -------
 def game_loop():
     global curr_game
+    # free_cash and curr_game calls include background images
     free_cash(game_choice)
     # game must be created first
     curr_game = choose_game(finalscore)
@@ -708,15 +741,8 @@ def game_loop():
         
     else:
         text_game()
-    #display.blit(curr_game.all_picts[0], (100,100))  
-    #pygame.display.flip()
-    
-    # curr_game returns a Game object with it's backround, 
-    # question/answer file, (0,0)location, number of questions
-
-
-    #curr_game.take_turn()
-    print('took a turn')    
+    # we have gone and played the game so we can now finish
+    final_score(curr_game.score)       
 
 #\\\\\\\\\\\\\\\\\\\\\\ END METHODS \\\\\\\\\\\\\\\\\\\\\\\\
 
