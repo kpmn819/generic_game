@@ -36,13 +36,12 @@ import timeout_decorator
 # //////////////////  CLASSES ///////////////////////////////////////////
 # !!!!!!!!!!!
 class TextGame():
-    def __init__(self, name, background, qu_ans, score, num_ans, reward= None):
+    def __init__(self, name, background, qu_ans, score,  reward= None):
         self.name = name
         self.background = background
         self.qu_ans = qu_ans # all of the questions and answers
         self.score = score
         self.reward = reward
-        self.num_ans = num_ans # how many answers per question
 
         # make two lists of questions and answers
         self.just_a = []
@@ -64,7 +63,7 @@ class TextGame():
  # ============ end of Game class methods =============== 
  # ============ start PictGame class =========================
 class PictGame():
-    def __init__(self, name, background, qu_ans, score, num_ans, reward= None): 
+    def __init__(self, name, background, qu_ans, score,  reward= None): 
         self.name = name
         self.background = background
         self.qu_ans = qu_ans # a list of tuples
@@ -533,10 +532,10 @@ def choose_game(background):
     # make the game object and call it curr_game
     if game_to_play == 1:
         curr_game = TextGame('bonehenge',g2_bkg, get_file('qna_pool.csv', 4)[0], [0,0], 5)
-        print('dolphin selected')
     if game_to_play == 2:
-        curr_game = PictGame('dolphin',g1_bkg, get_file('picture.csv', 2)[0], [0,0], 2)
-        
+        curr_game = PictGame('dolphin',g1_bkg, get_file('picture.csv', 2)[0], [0,0], 7)
+    if game_to_play == 3:
+        curr_game = TextGame('stupid',g2_bkg, get_file('another_text.csv', 4)[0], [0,0], 5)        
     pinball = SoundObject('pinball-start.mp3', .3)
     SoundObject.play_sound(pinball)
     sleep(2.5)
