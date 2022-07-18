@@ -1,13 +1,4 @@
 
-class Something():
-	def __init__(self, somevar):
-		self.somevar = somevar
-	def print_added(self, another):
-		print(another)
-
-
-zow = Something('42')
-print(zow.somevar)
-zow.another = '99'
-print(zow.another)
-Something.print_added(zow,zow.another)
+from config import file_path, some_file
+file_path = 'something else'
+print(some_file)

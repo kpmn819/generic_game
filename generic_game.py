@@ -6,6 +6,7 @@
 from random import randrange, shuffle, random, sample
 # pull stuff from config file
 from config import white, black, green, red
+
 #from random import sample
 from time import sleep, time
 import sys, pygame, os
@@ -393,6 +394,10 @@ def key_press():
                     
                 if event.key == pygame.K_5:
                     x = 5
+                
+                if event.key == pygame.K_q:
+                    raise Exception(KeyboardInterrupt)
+            
                     
     return x
 
@@ -546,6 +551,7 @@ def choose_game(background):
         print('dolphin selected')
     if game_to_play == 2:
         curr_game = PictGame('bonehenge',g1_bkg, picture, [0,0], 2)
+        
     pinball = SoundObject('pinball-start.mp3', .3)
     SoundObject.play_sound(pinball)
     sleep(2.5)
