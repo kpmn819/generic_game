@@ -6,3 +6,5 @@ blue = (0, 0, 255)
 green = (0, 255, 0)
 file_path = 'graphics/'
 some_file = file_path + 'somefile'
+game_names = ('dolphin', 'bonehenge', 'stupid')
+game_types = {'dolphin':'picture', 'bonehenge':'text','stupid':'text'}

@@ -7,6 +7,7 @@ from random import randrange, shuffle, random, sample
 from winsound import PlaySound
 # pull stuff from config file
 from config import white, black, green, red
+from config import game_names, game_types
 
 
 #from random import sample
@@ -270,9 +271,12 @@ def init():
         gpath = 'graphics/'
     else:
         gpath = '/home/pi/My-Code/Dolphin-Project/graphics/'
-
+    # $$$$$$$$$$ THESE TWO WILL GO AWAY SOON $$$$$$$$$$
     g1_open_pict = gpath + 'game_1.jpg'
     g2_open_pict = gpath + 'game_2.jpg'
+    # New naming convention
+    dolphin_bkg_file = gpath + 'game_1.jpg'
+    bonehenge_bkg_file = gpath + 'game_2.jpg'
     #free_donate_pict = gpath + 'free_donate.jpg' #(not used)
     game_choice_pict = gpath + 'game_choice.jpg'
     finalscore_pict = gpath + 'finalscore.jpg'
@@ -291,12 +295,17 @@ def init():
     yay = SoundObject('yay.mp3', .3)
     
     # full 1920 x 1080 images for backgrounds
-    global g1_bkg
-    g1_bkg = pygame.image.load(g1_open_pict).convert_alpha()
-    #g1_bkg = GraphicObject([0,0], gpath + 'game_1.jpg')
-    global g2_bkg
-    g2_bkg = pygame.image.load(g2_open_pict).convert_alpha()
-    #free_donate = pygame.image.load(free_donate_pict).convert_alpha() # not used
+    #global g1_bkg
+    #g1_bkg = pygame.image.load(g1_open_pict).convert_alpha()
+    
+    dolphin_bkg = pygame.image.load(dolphin_bkg_file).convert_alpha()
+    #global g2_bkg
+    #g2_bkg = pygame.image.load(g2_open_pict).convert_alpha()
+    
+    bonehenge_bkg = pygame.image.load(bonehenge_bkg_file).convert_alpha()
+    global bkg_surfaces
+    bkg_surfaces = {'dolphin':dolphin_bkg, 'bonehenge':bonehenge_bkg}
+
     global game_choice
     game_choice = pygame.image.load(game_choice_pict).convert_alpha()
     global finalscore
@@ -402,18 +411,19 @@ def place_arrows(style):
 # gets a list of intro statements and puts them on screen
 def picture_intro(curr_game):
     # put up the game intro
+    # splice the name of the game to _intro.csv to load file
     intro = get_file(curr_game.name + '_intro.csv', 1)[0]
     bkg = ScreenObject([0,0])
     ScreenObject.blit_scr_obj(bkg, bkg.location, curr_game.background)
-    text_y = 100
+    text_y = 400
     for i in range(0, len(intro)):
         intro_display(intro[i], text_y)
         text_y += 70
-    pygame.display.flip()
+        pygame.display.flip()
+        sleep(1)
     sleep(4)
 
 def intro_display(intro_line, y):
-    #font_process(60, greeting, white, image_centerx, 100)
     message = TextObject(str(intro_line[0]), [image_centerx, y], 60, white )
     TextObject.font_process(message)
 
@@ -553,13 +563,18 @@ def choose_game(background):
     place_arrows('2and4')
     pygame.display.flip()
     game_to_play = key_press()
+    name = game_names[game_to_play -1]
+    type = game_types[name]
+    print(type)
     # make the game object and call it curr_game
+    # the goal is to generalize the commands below to just two picture and text
+    # will need to change all the file names to make it work
     if game_to_play == 1:
-        curr_game = TextGame('bonehenge',g2_bkg, get_file('qna_pool.csv', 4)[0], [0,0], 5)
+        curr_game = PictGame( name, bkg_surfaces[name], get_file(name + '_picture.csv', 2)[0], [0,0])
     if game_to_play == 2:
-        curr_game = PictGame('dolphin',g1_bkg, get_file('picture.csv', 2)[0], [0,0], 7)
+        curr_game = TextGame( name, bkg_surfaces[name], get_file(name + '_qna.csv', 4)[0], [0,0])
     if game_to_play == 3:
-        curr_game = TextGame('stupid',g2_bkg, get_file('another_text.csv', 4)[0], [0,0], 5)
+        curr_game = TextGame( name, g2_bkg, get_file('another_text.csv', 4)[0], [0,0])
     curr_game.free = free # True for free False for donation this is an add on
     print(curr_game.free)        
     pinball = SoundObject('pinball-start.mp3', .3)
