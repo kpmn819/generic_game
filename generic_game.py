@@ -4,7 +4,7 @@
 # makes extensive use of pygame to blit the screen
 
 from random import randrange, shuffle, random, sample
-from winsound import PlaySound
+
 # pull stuff from config file
 from config import white, black, green, red
 from config import game_names, game_types
