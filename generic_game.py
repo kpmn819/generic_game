@@ -56,6 +56,8 @@ class TextGame():
                 temp.append(q_plus_a[i])
             self.just_a.append(temp)
             
+            
+            
         # leaving here our Game has the questions and answers
         # and a background
     # ============= end of Game class initialization ================   
@@ -148,8 +150,8 @@ class Button():
         self.in_stat = in_stat
         self.out_port = out_port
         self.out_stat = out_stat
-        
-
+    
+    
 # !!!!!!!!!!!!!
 class ScreenObject():
     def __init__(self, location):
@@ -230,12 +232,19 @@ def init():
     image_centerx = 960
     image_centery = 540
     # button(in port, in stat, out port, out stat)
+    global button1
     button1 = Button(4, True, 24, True)
+    global button2
     button2 = Button(17, True, 25, True)
+    global button3
     button3 = Button(27, True, 12, True)
+    global button4
     button4 = Button(22, True, 18, True)
+    global button5
     button5 = Button(5, True, 14, True)
+    global button_free
     button_free = Button(13, True, 16, True)
+    global button_pay
     button_pay = Button(26, True, 16, True)
 
 
@@ -250,7 +259,8 @@ def init():
     arrow4 = ScreenObject((1337, 890))
     global arrow5
     arrow5 = ScreenObject((1775, 890))
-    
+
+    # ======== pygame setup ===========
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.set_volume(1.0)
@@ -260,12 +270,11 @@ def init():
     screen_height = 1080
     bgColor = (0,0,0)
     size = (screen_width, screen_height)
-    
-    
     global display
     #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     display = pygame.display.set_mode((1920,1080))
-    # assign I/O ports here ////////////
+    # ^^^^^^^^^^^^ end pygame setup ^^^^^^^^^^^
+
     global gpath
     if os.name == 'nt':
         gpath = 'graphics/'
@@ -294,14 +303,7 @@ def init():
     global yay
     yay = SoundObject('yay.mp3', .3)
     
-    # full 1920 x 1080 images for backgrounds
-    #global g1_bkg
-    #g1_bkg = pygame.image.load(g1_open_pict).convert_alpha()
-    
     dolphin_bkg = pygame.image.load(dolphin_bkg_file).convert_alpha()
-    #global g2_bkg
-    #g2_bkg = pygame.image.load(g2_open_pict).convert_alpha()
-    
     bonehenge_bkg = pygame.image.load(bonehenge_bkg_file).convert_alpha()
     global bkg_surfaces
     bkg_surfaces = {'dolphin':dolphin_bkg, 'bonehenge':bonehenge_bkg}
@@ -310,7 +312,8 @@ def init():
     game_choice = pygame.image.load(game_choice_pict).convert_alpha()
     global finalscore
     finalscore = pygame.image.load(finalscore_pict).convert_alpha()
-    # small arrow with alpha
+
+    # these guys are shared by all games
     global blue_arrow
     blue_arrow = pygame.image.load(b_arro).convert_alpha()
     global green_glow
@@ -319,7 +322,7 @@ def init():
     red_glow = pygame.image.load(r_gl).convert_alpha()
     global gray_glow
     gray_glow = pygame.image.load(gr_gl).convert_alpha()
-    # get file data
+    # text responses to right and wrong answers
     global correct
     correct = get_file('right_resp.csv', 1)[0]
     global wrong
@@ -441,7 +444,7 @@ def score_process(curr_game, right):
     ScreenObject.blit_scr_obj(curr_game, [0,0], curr_game.background)
     # display response and score
     if curr_game.score[0] + curr_game.score[1] < 5:
-        message = 'Your score is ' + str(curr_game.score[0]) + ' Right '+ str(curr_game.score[1]) + ' Wrong'
+        message = f'Your score is {curr_game.score[0]} Right {curr_game.score[1]} Wrong'
         score_msg = TextObject(message,(900,500), 60, white)
         ScreenObject.blit_scr_obj(curr_game,(0,0),curr_game.background)
         TextObject.font_process(score_msg)
@@ -568,10 +571,9 @@ def choose_game(background):
     print(type)
     # make the game object and call it curr_game
     # the goal is to generalize the commands below to just two picture and text
-    # will need to change all the file names to make it work
-    if game_to_play == 1:
+    if type == 'picture':
         curr_game = PictGame( name, bkg_surfaces[name], get_file(name + '_picture.csv', 2)[0], [0,0])
-    if game_to_play == 2:
+    if type == 'text':
         curr_game = TextGame( name, bkg_surfaces[name], get_file(name + '_qna.csv', 4)[0], [0,0])
     if game_to_play == 3:
         curr_game = TextGame( name, g2_bkg, get_file('another_text.csv', 4)[0], [0,0])
@@ -748,7 +750,7 @@ def final_score(score):
     message = 'Final Score'
     msg = TextObject(message, [image_centerx, image_centery], 80, white)
     TextObject.font_process(msg)
-    message = str(score[0]) + ' Right  ' + str(score[1]) + ' Wrong'
+    message = f'{score[0]} Right {score[1]} Wrong'
     msg = TextObject(message, [image_centerx, image_centery + 90], 80, white)
     TextObject.font_process(msg)
     pygame.display.flip()
