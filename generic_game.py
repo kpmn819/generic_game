@@ -691,8 +691,8 @@ def text_game():
 
 #================== PICTURE GAME =================
 def picture_game():
-    wrong_sound = SoundObject('downer.mp3', .2)
-    right_sound = SoundObject('quick-win.mp3', .3)
+    wrong_sound = SoundObject('Downer.mp3', .2)
+    right_sound = SoundObject('Quick-win.mp3', .3)
     picture_intro(curr_game)
     # get 5 indexes for our turns
     turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
