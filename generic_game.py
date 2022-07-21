@@ -150,7 +150,24 @@ class Button():
         self.in_stat = in_stat
         self.out_port = out_port
         self.out_stat = out_stat
+    def read_status(self):
+        # read the input port here
+        '''if GPIO.input(self.in_port) == GPIO.LOW:
+            self.in_stat = False
+        else:
+            self.in_stat = True'''
+        return self
+    def set_status(self):
+        # set the output port here
+        if self.out_stat == True:
+            pass
+            #GPIO.output(self.out_port, True)
+        else:
+            #GPIO.output(self.out_port, False)
     
+            pass
+        return self
+
     
 # !!!!!!!!!!!!!
 class ScreenObject():
@@ -232,6 +249,7 @@ def init():
     image_centerx = 960
     image_centery = 540
     # button(in port, in stat, out port, out stat)
+
     global button1
     button1 = Button(4, True, 24, True)
     global button2
@@ -279,7 +297,7 @@ def init():
     if os.name == 'nt':
         gpath = 'graphics/'
     else:
-        gpath = '/home/pi/My-Code/Dolphin-Project/graphics/'
+        gpath = '/home/pi/Dol_class/graphics/'
     # $$$$$$$$$$ THESE TWO WILL GO AWAY SOON $$$$$$$$$$
     g1_open_pict = gpath + 'game_1.jpg'
     g2_open_pict = gpath + 'game_2.jpg'
@@ -301,7 +319,7 @@ def init():
     awefile = gpath + 'Awe.mp3'
     yayfile = gpath + 'Yay.mp3'
     global yay
-    yay = SoundObject('yay.mp3', .3)
+    yay = SoundObject('Yay.mp3', .3)
     
     dolphin_bkg = pygame.image.load(dolphin_bkg_file).convert_alpha()
     bonehenge_bkg = pygame.image.load(bonehenge_bkg_file).convert_alpha()
@@ -762,6 +780,7 @@ def final_score(score):
 # GAME LOOP -------
 def game_loop():
     global curr_game
+    
     # free_cash and curr_game calls include background images
     free_cash(game_choice)
     # game must be created first
@@ -782,6 +801,7 @@ def game_loop():
 
 
 def main():
+    
     try:
         init()
         global curr_game
