@@ -605,8 +605,8 @@ def choose_game(background):
 
 #==================== TEXT GAME =====================
 def text_game():
-    wrong_sound = SoundObject('downer.mp3', .2)
-    right_sound = SoundObject('quick-win.mp3', .3)
+    wrong_sound = SoundObject('Downer.mp3', .2)
+    right_sound = SoundObject('Quick-win.mp3', .3)
     # get 5 (number of turns)
     turn_picks = sample(range( 0, len(curr_game.just_q)), 5)
     curr_game.score = [0,0]
