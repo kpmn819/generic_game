@@ -13,7 +13,20 @@ zow.another = '99'
 print(zow.another)
 Something.print_added(zow,zow.another)
 #\\\\\\\\\ class example \\\\\\\\\\\\\\\
+# ///////////// CREATE CLASS INSTANCES FROM LIST //////////
+class Button():
+ def __init__(self,in_port, in_stat, out_port, out_stat):
+        self.in_port = in_port
+        self.in_stat = in_stat
+        self.out_port = out_port
+        self.out_stat = out_stat
 
+button_list = [[1, False, 3, True], [4, True, 6, True] ,[7, False, 9, True]]
+
+button_list = [Button(x, y, z, q) for x, y, z, q in button_list]
+button_list[0].in_port = 99
+print(button_list[0].in_port)
+#\\\\\\\\\\\\\ CLASS INSTANCES \\\\\\\\\\\\\\\\\\\
 # ///////////// ENUMERATE EXAMPLE ///////////////////
 users = ["Test User", "Real User 1", "Real User 2"]
 for index, user in enumerate(users):
