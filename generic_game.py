@@ -143,31 +143,31 @@ class Port():
             pass
         if config == 'three_on':
             pass
-
+# ----------- Buttons ---------------
 class Button():
     def __init__(self, in_port, in_stat, out_port, out_stat):
         self.in_port = in_port
         self.in_stat = in_stat
         self.out_port = out_port
         self.out_stat = out_stat
+    def setup_port(self):
+        #initialize ports
+        GPIO.setup(self.out_port, GPIO.OUT)
+        GPIO.setup(self.in_port, GPIO.IN, pull_up_down = GPIO.PUD_UP)
     def read_status(self):
         # read the input port here
-        '''if GPIO.input(self.in_port) == GPIO.LOW:
+        if GPIO.input(self.in_port) == GPIO.LOW:
             self.in_stat = False
         else:
-            self.in_stat = True'''
-        return self
+            self.in_stat = True
+            return self
     def set_status(self):
         # set the output port here
         if self.out_stat == True:
-            pass
-            #GPIO.output(self.out_port, True)
+            GPIO.output(self.out_port, True)
         else:
-            #GPIO.output(self.out_port, False)
-    
-            pass
+            GPIO.output(self.out_port, False)
         return self
-
     
 # !!!!!!!!!!!!!
 class ScreenObject():
@@ -379,7 +379,79 @@ def get_file(list_file, col_count):
         # print message on screen
         file_error = True
         
-def key_press():
+def light_proc(light_list):
+    if os.name == 'nt':
+        pass
+    else:
+        buttons_lights(light_list,1,0)
+
+def btn_proc(btn_list):
+    if os.name == 'nt':
+        resp = key_press(btn_list)
+        return resp
+    else:
+        buttons = buttons_lights(btn_list, 0, 1)
+        for i, button in enumerate(buttons):
+            if not button.out_stat:
+                return i
+            
+
+
+
+def buttons_lights(active_list, lgt_set, btn_mon):
+    try:button1
+    except NameError: button1 = None
+    # figure if one is missing they all are
+    if button1 is None:
+        #             in, in stat, out, out stat
+        btn_free = Button(13, True, 16, True)
+        button1 = Button(4, True, 24, True)
+        button2 = Button(17, True, 25, True)
+        button3 = Button(27, True, 12, True)
+        button4 = Button(22, True, 18, True)
+        button5 = Button(5, True, 14, True)
+        btn_pay = Button(26, True, 16, True)
+        button_list = [btn_free, button1, button2, button3, button4,
+                   button5, btn_pay]
+        for i, button in enumerate(button_list):
+            Button.setup_port(button)
+
+    if lgt_set:
+        # uses active_list to set outputs
+        for i, button in enumerate(button_list):
+            if active_list[i]:
+                # set the port False = low light on
+                GPIO.output(button.out_port, False)
+                # call Button to set port gpio
+                button.out_stat = False
+            else:
+                button.out_stat = True
+                GPIO.output(button.out_port, True)
+
+    if btn_mon:
+        loop = True
+        count = 0
+        while loop == True:
+            count += 1
+            for i, button in enumerate(button_list):
+                    # only check the flagged ports
+                if active_list[i]:
+                    # go check the physical port if it comes back False
+                    if GPIO.input(button.in_port) == GPIO.LOW:
+                        button.in_stat = False
+                        loop = False
+                        # set our status and get out
+                        count += 1
+                        print('in loop now '+ str(count)+ ' ' + str(loop))
+                    sleep(.1)
+                    print('in loop now '+ str(count)+ ' ' + str(loop))
+                else:
+                    pass
+    return    button_list
+
+
+def key_press(key_list):
+    # list looks like [0, 1, 1, 1, 1, 1, 0]
     x = ''
     loop = True
     while x == '':
@@ -394,6 +466,7 @@ def key_press():
             if event.type == pygame.KEYDOWN:
                 
                 # checking if key "A" was pressed
+
                 if event.key == pygame.K_1:
                     x = 1
                     
@@ -479,6 +552,8 @@ def score_process(curr_game, right):
 def free_cash(background):
     ''' called by both games selects if it is a free game or
     if they put in some money sets global variables'''
+    button_list = [0, 1, 0, 0, 0, 1, 0]
+
     # display rules and wait for input
     global free
     #global win
@@ -509,7 +584,7 @@ def free_cash(background):
     
     while True:
         sleep(.05)
-        selection = key_press()
+        selection = key_press(button_list)
         if selection == 1:
             SoundObject.play_sound(yay)
             free = False
@@ -523,6 +598,7 @@ def free_cash(background):
 
 #================ CHOOSE GAME ====================
 def choose_game(background):
+    button_list = [0, 1, 0, 0, 0, 1, 0]
     global curr_game
     bakgnd = ScreenObject((0,0))
     ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
@@ -560,7 +636,7 @@ def choose_game(background):
         y = y + 70
     place_arrows('2and4')
     pygame.display.flip()
-    game_to_play = key_press()
+    game_to_play = key_press(button_list)
     name = game_names[game_to_play -1]
     type = game_types[name]
     print(type)
@@ -582,6 +658,7 @@ def choose_game(background):
 
 #==================== TEXT GAME =====================
 def text_game():
+    button_list = [0, 1, 0, 1, 0, 1, 0]
     wrong_sound = SoundObject('Downer.mp3', .2)
     right_sound = SoundObject('Quick-win.mp3', .3)
     # get 5 (number of turns)
@@ -628,7 +705,7 @@ def text_game():
         pygame.display.flip()
         # have the lights right and wait for a response
         # $$$$$$$$$ replace with button input polling
-        resp = str(key_press())
+        resp = str(key_press(button_list))
         # need to highlight correct in green
         r_indx = display_list.index(turn_ans[0]) #gives index of right ans
         highlight_ans = TextObject(turn_ans[0], [blit_x[r_indx], 500],50,green, 20)
@@ -668,6 +745,7 @@ def text_game():
 
 #================== PICTURE GAME =================
 def picture_game():
+    button_list = [0, 1, 1, 1, 1, 1, 0]
     wrong_sound = SoundObject('Downer.mp3', .2)
     right_sound = SoundObject('Quick-win.mp3', .3)
     picture_intro(curr_game)
@@ -705,7 +783,7 @@ def picture_game():
 
         place_arrows('12345')
         pygame.display.flip()
-        resp = key_press()
+        resp = key_press(button_list)
         # correct answer highlited green nomatter what
         glo_offset = 20
         c_index = shuffle_answers.index(answer_picture)
