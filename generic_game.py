@@ -250,7 +250,7 @@ def init():
     image_centery = 540
     # button(in port, in stat, out port, out stat)
 
-    global button1
+    '''global button1
     button1 = Button(4, True, 24, True)
     global button2
     button2 = Button(17, True, 25, True)
@@ -263,7 +263,7 @@ def init():
     global button_free
     button_free = Button(13, True, 16, True)
     global button_pay
-    button_pay = Button(26, True, 16, True)
+    button_pay = Button(26, True, 16, True)'''
 
 
     # make some arrow objects
@@ -282,7 +282,7 @@ def init():
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.set_volume(1.0)
-    os.environ['SDL_VIDEO_CENTERED'] = '1'
+    #os.environ['SDL_VIDEO_CENTERED'] = '1'
     clock = pygame.time.Clock()
     screen_width = 1920
     screen_height = 1080
@@ -517,30 +517,7 @@ def free_cash(background):
             free = True
         print(selection)
         break
-        '''if GPIO.input(portList2[1]) == GPIO.LOW:
-            sleep(.08)
-            free = True
-            win = False
-            print('Free Play')
-            break
-                
-        if GPIO.input(portList2[2]) == GPIO.LOW:
-            #print('PLAYBACK SHOULD HAPPEN')
-            sleep(.08)
-            free = False
-            win = False # set it false for now
-            Rnd_Chance = int(random() * 100 )
-            play_sound('Yay.mp3', .3)
-            
-            
-            if Rnd_Chance <= payout:
-                win = True
-                print('A Winner')
-                
-            else:
-                win = False
-                print('A Loser')
-            break'''
+        
 
 
 
