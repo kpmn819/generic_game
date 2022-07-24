@@ -77,7 +77,7 @@ def buttons_lights(active_list, lgt_set, btn_mon):
                         # set our status and get out
                         count += 1
                         print('in loop now '+ str(count)+ ' ' + str(loop))
-                    sleep(.1)
+                    sleep(.01)
                     print('in loop now '+ str(count)+ ' ' + str(loop))
                 else:
                     pass
@@ -85,14 +85,14 @@ def buttons_lights(active_list, lgt_set, btn_mon):
 
 
 # 0=free, 1=btn1, 2=btn2, 3=btn3, 4=btn4, 5=btn5, 6=pay
-active_list = [1, 0, 0, 0, 0, 0, 1]
+active_list = [1, 1, 1, 1, 1, 1, 1]
 # last two items in buttons_lights call lgt_set, btn_mon
 # setup ports
 button_list = buttons_lights(active_list, 0, 0)
 # setup lights
 button_list = buttons_lights(active_list, 1, 0)
 # monitor buttons
-active_list = [1, 0, 0, 0, 0, 0, 1]
+active_list = [1, 1, 1, 1, 1, 1, 1]
 button_list = buttons_lights(active_list, 0, 1)
 sleep(2)
 print(button_list[1].out_port)
