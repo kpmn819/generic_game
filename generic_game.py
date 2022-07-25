@@ -158,6 +158,7 @@ class Button():
         # read the input port here
         if GPIO.input(self.in_port) == GPIO.LOW:
             self.in_stat = False
+            return self
         else:
             self.in_stat = True
             return self
@@ -398,7 +399,7 @@ def btn_proc(btn_list):
 
 
 
-def buttons_lights(active_list, lgt_set, btn_mon):
+def buttons_lights(light_list, lgt_set, btn_mon):
     try:button1
     except NameError: button1 = None
     # figure if one is missing they all are
@@ -419,7 +420,7 @@ def buttons_lights(active_list, lgt_set, btn_mon):
     if lgt_set:
         # uses active_list to set outputs
         for i, button in enumerate(button_list):
-            if active_list[i]:
+            if light_list[i]:
                 # set the port False = low light on
                 GPIO.output(button.out_port, False)
                 # call Button to set port gpio
@@ -435,7 +436,7 @@ def buttons_lights(active_list, lgt_set, btn_mon):
             count += 1
             for i, button in enumerate(button_list):
                     # only check the flagged ports
-                if active_list[i]:
+                if light_list[i]:
                     # go check the physical port if it comes back False
                     if GPIO.input(button.in_port) == GPIO.LOW:
                         button.in_stat = False
@@ -553,6 +554,8 @@ def free_cash(background):
     ''' called by both games selects if it is a free game or
     if they put in some money sets global variables'''
     button_list = [0, 1, 0, 0, 0, 1, 0]
+    # setup lights
+    light_proc(button_list)
 
     # display rules and wait for input
     global free
@@ -584,7 +587,8 @@ def free_cash(background):
     
     while True:
         sleep(.05)
-        selection = key_press(button_list)
+        #selection = key_press(button_list)
+        selection = btn_proc(button_list)
         if selection == 1:
             SoundObject.play_sound(yay)
             free = False
@@ -599,6 +603,7 @@ def free_cash(background):
 #================ CHOOSE GAME ====================
 def choose_game(background):
     button_list = [0, 1, 0, 0, 0, 1, 0]
+    light_proc(button_list)
     global curr_game
     bakgnd = ScreenObject((0,0))
     ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
@@ -636,7 +641,8 @@ def choose_game(background):
         y = y + 70
     place_arrows('2and4')
     pygame.display.flip()
-    game_to_play = key_press(button_list)
+    #game_to_play = key_press(button_list)
+    game_to_play = btn_proc(button_list)
     name = game_names[game_to_play -1]
     type = game_types[name]
     print(type)
