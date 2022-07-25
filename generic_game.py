@@ -447,7 +447,7 @@ def buttons_lights(light_list, lgt_set, btn_mon):
                         # set our status and get out
                         count += 1
                         #print('in loop now '+ str(count)+ ' ' + str(loop))
-                    sleep(.1)
+                    sleep(.01)
                     #print('in loop now '+ str(count)+ ' ' + str(loop))
                 else:
                     pass
