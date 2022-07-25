@@ -250,21 +250,17 @@ def init():
     image_centerx = 960
     image_centery = 540
     # button(in port, in stat, out port, out stat)
-
-    '''global button1
-    button1 = Button(4, True, 24, True)
-    global button2
-    button2 = Button(17, True, 25, True)
-    global button3
-    button3 = Button(27, True, 12, True)
-    global button4
-    button4 = Button(22, True, 18, True)
-    global button5
-    button5 = Button(5, True, 14, True)
-    global button_free
-    button_free = Button(13, True, 16, True)
-    global button_pay
-    button_pay = Button(26, True, 16, True)'''
+    if os.name == 'nt':
+        pass
+    else:
+        # Initialize i/o ports and flash lights
+        light_list = [0] * 7
+        buttons_lights(light_list, 0, 0)
+        light_list = [1] * 7
+        buttons_lights(light_list, 1, 0)
+        sleep(1)
+        light_list = [0] * 7
+        buttons_lights(light_list, 1, 0)
 
 
     # make some arrow objects
@@ -393,6 +389,7 @@ def btn_proc(btn_list):
     else:
         buttons = buttons_lights(btn_list, 0, 1)
         for i, button in enumerate(buttons):
+            print(str(button.out_port) + ' '+str(button.out_stat))
             if not button.out_stat:
                 return i
             
@@ -400,10 +397,8 @@ def btn_proc(btn_list):
 
 
 def buttons_lights(light_list, lgt_set, btn_mon):
-    try:button1
-    except NameError: button1 = None
-    # figure if one is missing they all are
-    if button1 is None:
+    # 0, 0 initializes the ports
+    if not lgt_set and not btn_mon:
         #             in, in stat, out, out stat
         btn_free = Button(13, True, 16, True)
         button1 = Button(4, True, 24, True)
@@ -414,12 +409,16 @@ def buttons_lights(light_list, lgt_set, btn_mon):
         btn_pay = Button(26, True, 16, True)
         button_list = [btn_free, button1, button2, button3, button4,
                    button5, btn_pay]
+        # this makes it persistant for use below
+        global button_obj
+        button_obj = button_list
         for i, button in enumerate(button_list):
             Button.setup_port(button)
+            print('PORTS INITIALIZED')
 
     if lgt_set:
         # uses active_list to set outputs
-        for i, button in enumerate(button_list):
+        for i, button in enumerate(button_obj):
             if light_list[i]:
                 # set the port False = low light on
                 GPIO.output(button.out_port, False)
@@ -434,7 +433,7 @@ def buttons_lights(light_list, lgt_set, btn_mon):
         count = 0
         while loop == True:
             count += 1
-            for i, button in enumerate(button_list):
+            for i, button in enumerate(button_obj):
                     # only check the flagged ports
                 if light_list[i]:
                     # go check the physical port if it comes back False
@@ -448,7 +447,7 @@ def buttons_lights(light_list, lgt_set, btn_mon):
                     print('in loop now '+ str(count)+ ' ' + str(loop))
                 else:
                     pass
-    return    button_list
+        return    button_obj
 
 
 def key_press(key_list):
@@ -602,7 +601,7 @@ def free_cash(background):
 
 #================ CHOOSE GAME ====================
 def choose_game(background):
-    button_list = [0, 1, 0, 0, 0, 1, 0]
+    button_list = [1, 1, 0, 0, 0, 1, 0]
     light_proc(button_list)
     global curr_game
     bakgnd = ScreenObject((0,0))
@@ -641,9 +640,11 @@ def choose_game(background):
         y = y + 70
     place_arrows('2and4')
     pygame.display.flip()
+
     #game_to_play = key_press(button_list)
+    light_proc(button_list)
     game_to_play = btn_proc(button_list)
-    name = game_names[game_to_play -1]
+    name = game_names[game_to_play]
     type = game_types[name]
     print(type)
     # make the game object and call it curr_game
@@ -755,6 +756,8 @@ def picture_game():
     wrong_sound = SoundObject('Downer.mp3', .2)
     right_sound = SoundObject('Quick-win.mp3', .3)
     picture_intro(curr_game)
+    light_proc(button_list)
+
     # get 5 indexes for our turns
     turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
     for q in range(0,5):
@@ -789,7 +792,8 @@ def picture_game():
 
         place_arrows('12345')
         pygame.display.flip()
-        resp = key_press(button_list)
+        #resp = key_press(button_list)
+        resp = btn_proc(button_list)
         # correct answer highlited green nomatter what
         glo_offset = 20
         c_index = shuffle_answers.index(answer_picture)
