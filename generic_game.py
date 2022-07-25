@@ -389,8 +389,11 @@ def btn_proc(btn_list):
     else:
         buttons = buttons_lights(btn_list, 0, 1)
         for i, button in enumerate(buttons):
-            print(str(button.out_port) + ' '+str(button.out_stat))
-            if not button.out_stat:
+            if not button.in_stat:
+                print(str(button.in_port) + ' '+str(button.in_stat))
+                # reset for the next time
+                button.in_stat = True
+
                 return i
             
 
@@ -434,19 +437,21 @@ def buttons_lights(light_list, lgt_set, btn_mon):
         while loop == True:
             count += 1
             for i, button in enumerate(button_obj):
-                    # only check the flagged ports
+                # only check the flagged ports
                 if light_list[i]:
                     # go check the physical port if it comes back False
                     if GPIO.input(button.in_port) == GPIO.LOW:
                         button.in_stat = False
-                        loop = False
+                        return button_obj
+                        # loop = False
                         # set our status and get out
                         count += 1
-                        print('in loop now '+ str(count)+ ' ' + str(loop))
+                        #print('in loop now '+ str(count)+ ' ' + str(loop))
                     sleep(.1)
-                    print('in loop now '+ str(count)+ ' ' + str(loop))
+                    #print('in loop now '+ str(count)+ ' ' + str(loop))
                 else:
                     pass
+        # returns button objects to btn_proc to scan
         return    button_obj
 
 
@@ -644,6 +649,7 @@ def choose_game(background):
     #game_to_play = key_press(button_list)
     light_proc(button_list)
     game_to_play = btn_proc(button_list)
+    #name = game_names[game_to_play]
     name = game_names[game_to_play]
     type = game_types[name]
     print(type)
@@ -666,6 +672,7 @@ def choose_game(background):
 #==================== TEXT GAME =====================
 def text_game():
     button_list = [0, 1, 0, 1, 0, 1, 0]
+    light_proc(button_list)
     wrong_sound = SoundObject('Downer.mp3', .2)
     right_sound = SoundObject('Quick-win.mp3', .3)
     # get 5 (number of turns)
@@ -710,9 +717,10 @@ def text_game():
             ax_offset += 640
 
         pygame.display.flip()
-        # have the lights right and wait for a response
-        # $$$$$$$$$ replace with button input polling
-        resp = str(key_press(button_list))
+
+        # go and get the button pressed and convert it to an index
+        btn_dict = {1:1, 3:2, 5:3}
+        resp = btn_dict[btn_proc(button_list)]
         # need to highlight correct in green
         r_indx = display_list.index(turn_ans[0]) #gives index of right ans
         highlight_ans = TextObject(turn_ans[0], [blit_x[r_indx], 500],50,green, 20)
@@ -726,7 +734,7 @@ def text_game():
         pygame.display.flip()
 
         # Right and Wrong answer processing
-        if display_list[int(resp)-1] == turn_ans[0]:
+        if display_list[resp -1] == turn_ans[0]:
             print('got it')
             resp_ans = True
             SoundObject.play_sound(right_sound)
@@ -737,10 +745,10 @@ def text_game():
             # need to blit wrong in red
             ax_offset = 320
             ay_offset = 500
-            highlight_ans = TextObject(display_list[int(resp)-1],(blit_x[int(resp)-1],ay_offset),50,red,20)
+            highlight_ans = TextObject(display_list[resp - 1],(blit_x[resp - 1],ay_offset),50,red,20)
             h_parsed = TextObject.parse_string(highlight_ans)
             for item in h_parsed:
-                highlight_ans.location = [blit_x[int(resp)-1],ay_offset]
+                highlight_ans.location = [blit_x[resp-1],ay_offset]
                 highlight_ans.text = item
                 TextObject.font_process(highlight_ans)
                 ay_offset += 70
