@@ -509,6 +509,9 @@ def place_arrows(style):
 
 # gets a list of intro statements and puts them on screen
 def picture_intro(curr_game):
+    button_list = [0,0,0,0,0,0,0]
+    light_proc(button_list)
+
     # put up the game intro
     # splice the name of the game to _intro.csv to load file
     intro = get_file(curr_game.name + '_intro.csv', 1)[0]
@@ -557,7 +560,7 @@ def score_process(curr_game, right):
 def free_cash(background):
     ''' called by both games selects if it is a free game or
     if they put in some money sets global variables'''
-    button_list = [0, 1, 0, 0, 0, 1, 0]
+    button_list = [1, 0, 0, 0, 0, 0, 1]
     # setup lights
     light_proc(button_list)
 
@@ -587,26 +590,26 @@ def free_cash(background):
     
     
     # Select if this is a paid or free play
-    # make a quick change to this file
-    
     while True:
         sleep(.05)
         #selection = key_press(button_list)
         selection = btn_proc(button_list)
-        if selection == 1:
+        if selection == 0:
             SoundObject.play_sound(yay)
             free = False
         else:
             free = True
         print(selection)
+        
         break
+
         
 
 
 
 #================ CHOOSE GAME ====================
 def choose_game(background):
-    button_list = [1, 1, 0, 0, 0, 1, 0]
+    button_list = [0, 1, 0, 0, 0, 1, 0]
     light_proc(button_list)
     global curr_game
     bakgnd = ScreenObject((0,0))
@@ -761,10 +764,11 @@ def text_game():
 #================== PICTURE GAME =================
 def picture_game():
     button_list = [0, 1, 1, 1, 1, 1, 0]
+    light_proc(button_list)
+
     wrong_sound = SoundObject('Downer.mp3', .2)
     right_sound = SoundObject('Quick-win.mp3', .3)
     picture_intro(curr_game)
-    light_proc(button_list)
 
     # get 5 indexes for our turns
     turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
@@ -786,16 +790,17 @@ def picture_game():
         ScreenObject.blit_scr_obj(curr_game,[0,0], curr_game.background)
         #shuffle_answer order
         shuffle(shuffle_answers)
-        display.blit(question_picture, (810,40))
+        display.blit(gray_glow, (770, 2))
+        display.blit(question_picture, (810, 40))
 
         blit_index = []
-        x = 190
+        x = 50
         blit_index.append(x)
         # put answers on screen
         ay = 600
         for i in range(0,5):
             display.blit(shuffle_answers[i], (x,ay)) 
-            x += 310
+            x += 380
             blit_index.append(x)
 
         place_arrows('12345')
@@ -830,6 +835,8 @@ def picture_game():
 
 #================= FINAL SCORE ===================
 def final_score(score):
+    button_list = [0, 0, 0, 0, 0, 0, 0]
+    light_proc(button_list)
     f_score_sounds = ['0_right.wav','1_right.wav','2_right.mp3','3_right.wav',
                        '4_right.mp3', '5_right.wav']
     f_score_vol = [.3, 1, 1, .5, 1, 1]
