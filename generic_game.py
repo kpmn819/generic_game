@@ -6,8 +6,9 @@
 from random import randrange, shuffle, random, sample
 
 # pull stuff from config file
-from config import white, black, green, red
+from config import white, black, green, red, blue
 from config import game_names, game_types
+from config import small_prize, big_prize
 
 
 #from random import sample
@@ -735,6 +736,7 @@ def text_game():
             TextObject.font_process(highlight_ans)
             ay_offset += 70
         pygame.display.flip()
+        
 
         # Right and Wrong answer processing
         if display_list[resp -1] == turn_ans[0]:
@@ -837,11 +839,14 @@ def picture_game():
 def final_score(score):
     button_list = [0, 0, 0, 0, 0, 0, 0]
     light_proc(button_list)
+
+    # play game final sound
     f_score_sounds = ['0_right.wav','1_right.wav','2_right.mp3','3_right.wav',
                        '4_right.mp3', '5_right.wav']
     f_score_vol = [.3, 1, 1, .5, 1, 1]
     final_sound = SoundObject(f_score_sounds[score[0]], f_score_vol[score[1]])
     SoundObject.play_sound(final_sound)
+
     # put up background and text
     bkg = ScreenObject([0,0])
     ScreenObject.blit_scr_obj(bkg, [0,0], finalscore)
@@ -852,8 +857,58 @@ def final_score(score):
     msg = TextObject(message, [image_centerx, image_centery + 90], 80, white)
     TextObject.font_process(msg)
     pygame.display.flip()
-    sleep(4)
-    pass
+    sleep(2)
+
+    # process winners
+    if score[0] > 3 and not free:
+        if 'small_index' not in locals():
+            small_index = 0
+            small_word = small_prize[small_index]
+        else:
+            if small_index == len(small_prize):
+                small_index = 0
+                small_word = small_prize[small_index]
+            else:
+                small_index += 1
+                small_word = small_prize[small_index]
+        if 'big_index' not in locals():
+            big_index = 0
+            big_word = big_prize[big_index]
+        else:
+            if big_index == len(big_prize):
+                big_index = 0
+                big_word = big_prize[big_index]
+            else:
+                big_index += 1
+                big_word = big_prize[big_index]
+
+        if score[0] == 5:
+            win_word = big_word
+            print('Big Prize'+ ' = ', win_word)
+        else:
+            win_word = small_word
+            print('Small Prize'+ ' = ', win_word)
+            
+        msg_y = 700
+        message = TextObject('You are a WINNER!!',(image_centerx, msg_y),75,red )
+        TextObject.font_process(message)
+        msg_y += 100
+        message = TextObject('Please see one of our Staff for your prize', (image_centerx, msg_y),75,red)
+        TextObject.font_process(message)
+        msg_y += 100
+        message = TextObject('Tell them your winner code is '+ '"'+ win_word+ '"', (image_centerx, msg_y),75,red)
+        TextObject.font_process(message)
+        pygame.display.flip()
+        sleep(4)
+
+
+           
+    else:
+        msg_y = 700
+        message = TextObject('Sorry you did not win this time',(image_centerx, msg_y),75,blue )
+        TextObject.font_process(message)
+
+    
 #^^^^^^^^^^^^^^^^^ FINAL SCORE ^^^^^^^^^^^^^^^^^^^
 
 
