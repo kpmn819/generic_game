@@ -296,6 +296,7 @@ def init():
         gpath = 'graphics/'
     else:
         gpath = '/home/pi/Dol_class/graphics/'
+
     # $$$$$$$$$$ THESE TWO WILL GO AWAY SOON $$$$$$$$$$
     g1_open_pict = gpath + 'game_1.jpg'
     g2_open_pict = gpath + 'game_2.jpg'
@@ -647,7 +648,7 @@ def choose_game(background):
         greet = TextObject(item, (x, y), 60, white)
         TextObject.font_process(greet)
         y = y + 70
-    place_arrows('2and4')
+    place_arrows('1and5')
     pygame.display.flip()
 
     #game_to_play = key_press(button_list)
@@ -706,11 +707,12 @@ def text_game():
         # place answers
         ax_offset = 320
         ay_offset = 500
+        ans_font = 60
         blit_x = []
         for i in range(0,3):
             blit_x.append(ax_offset) # for use in later lookup
             ay_offset = 500
-            answer = TextObject(display_list[i], [ax_offset,ay_offset], 50, white, 20)
+            answer = TextObject(display_list[i], [ax_offset,ay_offset], ans_font, white, 20)
             q_parsed = TextObject.parse_string(answer)
             print(q_parsed)
             for item in q_parsed:
@@ -726,8 +728,9 @@ def text_game():
         btn_dict = {1:1, 3:2, 5:3}
         resp = btn_dict[btn_proc(button_list)]
         # need to highlight correct in green
+        
         r_indx = display_list.index(turn_ans[0]) #gives index of right ans
-        highlight_ans = TextObject(turn_ans[0], [blit_x[r_indx], 500],50,green, 20)
+        highlight_ans = TextObject(turn_ans[0], [blit_x[r_indx], 500],ans_font,green, 20)
         h_parsed = TextObject.parse_string(highlight_ans)
         ay_offset = 500
         for item in h_parsed:
@@ -735,8 +738,6 @@ def text_game():
             highlight_ans.text = item
             TextObject.font_process(highlight_ans)
             ay_offset += 70
-        pygame.display.flip()
-        
 
         # Right and Wrong answer processing
         if display_list[resp -1] == turn_ans[0]:
@@ -750,14 +751,14 @@ def text_game():
             # need to blit wrong in red
             ax_offset = 320
             ay_offset = 500
-            highlight_ans = TextObject(display_list[resp - 1],(blit_x[resp - 1],ay_offset),50,red,20)
+            highlight_ans = TextObject(display_list[resp - 1],(blit_x[resp - 1],ay_offset),ans_font,red,20)
             h_parsed = TextObject.parse_string(highlight_ans)
             for item in h_parsed:
                 highlight_ans.location = [blit_x[resp-1],ay_offset]
                 highlight_ans.text = item
                 TextObject.font_process(highlight_ans)
                 ay_offset += 70
-            pygame.display.flip()
+        pygame.display.flip()
         sleep(1)
         score_process(curr_game, resp_ans)
 
@@ -850,14 +851,15 @@ def final_score(score):
     # put up background and text
     bkg = ScreenObject([0,0])
     ScreenObject.blit_scr_obj(bkg, [0,0], finalscore)
+    msg_y = 400
     message = 'Final Score'
-    msg = TextObject(message, [image_centerx, image_centery], 80, white)
+    msg = TextObject(message, [image_centerx, msg_y], 80, white)
     TextObject.font_process(msg)
     message = f'{score[0]} Right {score[1]} Wrong'
-    msg = TextObject(message, [image_centerx, image_centery + 90], 80, white)
+    msg = TextObject(message, [image_centerx, msg_y + 90], 80, white)
     TextObject.font_process(msg)
     pygame.display.flip()
-    sleep(2)
+    sleep(4)
 
     # process winners
     if score[0] > 3 and not free:
@@ -888,7 +890,7 @@ def final_score(score):
         else:
             win_word = small_word
             print('Small Prize'+ ' = ', win_word)
-            
+        
         msg_y = 700
         message = TextObject('You are a WINNER!!',(image_centerx, msg_y),75,red )
         TextObject.font_process(message)
@@ -899,14 +901,18 @@ def final_score(score):
         message = TextObject('Tell them your winner code is '+ '"'+ win_word+ '"', (image_centerx, msg_y),75,red)
         TextObject.font_process(message)
         pygame.display.flip()
-        sleep(4)
+        fanfare = SoundObject('fanfare.mp3', 1)   
+        SoundObject.play_sound(fanfare)
+        sleep(5)
 
 
            
-    else:
+    elif score[0] < 4 and not free:
         msg_y = 700
         message = TextObject('Sorry you did not win this time',(image_centerx, msg_y),75,blue )
         TextObject.font_process(message)
+        pygame.display.flip()
+        sleep(2)
 
     
 #^^^^^^^^^^^^^^^^^ FINAL SCORE ^^^^^^^^^^^^^^^^^^^
