@@ -7,7 +7,7 @@ from random import randrange, shuffle, random, sample
 
 # pull stuff from config file
 from config import white, black, green, red, blue
-from config import game_names, game_types
+from config import game_names, game_types, nt_path, pi_path
 from config import small_prize, big_prize
 
 
@@ -133,7 +133,6 @@ class Port():
     def read_state(self):
         if self.input:
             # read the port
-            print('reading port')
             return self.state
         else:
             pass
@@ -293,9 +292,9 @@ def init():
 
     global gpath
     if os.name == 'nt':
-        gpath = 'graphics/'
+        gpath = nt_path
     else:
-        gpath = '/home/pi/Dol_class/graphics/'
+        gpath = pi_path
 
     # $$$$$$$$$$ THESE TWO WILL GO AWAY SOON $$$$$$$$$$
     g1_open_pict = gpath + 'game_1.jpg'
@@ -392,7 +391,6 @@ def btn_proc(btn_list):
         buttons = buttons_lights(btn_list, 0, 1)
         for i, button in enumerate(buttons):
             if not button.in_stat:
-                print(str(button.in_port) + ' '+str(button.in_stat))
                 # reset for the next time
                 button.in_stat = True
 
@@ -419,7 +417,7 @@ def buttons_lights(light_list, lgt_set, btn_mon):
         button_obj = button_list
         for i, button in enumerate(button_list):
             Button.setup_port(button)
-            print('PORTS INITIALIZED')
+        print('PORTS INITIALIZED')
 
     if lgt_set:
         # uses active_list to set outputs
@@ -448,9 +446,7 @@ def buttons_lights(light_list, lgt_set, btn_mon):
                         # loop = False
                         # set our status and get out
                         count += 1
-                        #print('in loop now '+ str(count)+ ' ' + str(loop))
                     sleep(.01)
-                    #print('in loop now '+ str(count)+ ' ' + str(loop))
                 else:
                     pass
         # returns button objects to btn_proc to scan
@@ -601,8 +597,6 @@ def free_cash(background):
             free = False
         else:
             free = True
-        print(selection)
-        
         break
 
         
@@ -657,7 +651,6 @@ def choose_game(background):
     #name = game_names[game_to_play]
     name = game_names[game_to_play]
     type = game_types[name]
-    print(type)
     # make the game object and call it curr_game
     # the goal is to generalize the commands below to just two picture and text
     if type == 'picture':
@@ -667,7 +660,6 @@ def choose_game(background):
     if game_to_play == 3:
         curr_game = TextGame( name, g2_bkg, get_file('another_text.csv', 4)[0], [0,0])
     curr_game.free = free # True for free False for donation this is an add on
-    print(curr_game.free)        
     pinball = SoundObject('pinball-start.mp3', .3)
     SoundObject.play_sound(pinball)
     sleep(2.5)
@@ -714,14 +706,14 @@ def text_game():
             ay_offset = 500
             answer = TextObject(display_list[i], [ax_offset,ay_offset], ans_font, white, 20)
             q_parsed = TextObject.parse_string(answer)
-            print(q_parsed)
             for item in q_parsed:
                 answer.location = [ax_offset,ay_offset]
                 answer.text = item
                 TextObject.font_process(answer)
                 ay_offset += 70
             ax_offset += 640
-
+        place_arrows('135')
+        
         pygame.display.flip()
 
         # go and get the button pressed and convert it to an index
@@ -886,10 +878,8 @@ def final_score(score):
 
         if score[0] == 5:
             win_word = big_word
-            print('Big Prize'+ ' = ', win_word)
         else:
             win_word = small_word
-            print('Small Prize'+ ' = ', win_word)
         
         msg_y = 700
         message = TextObject('You are a WINNER!!',(image_centerx, msg_y),75,red )
@@ -929,7 +919,7 @@ def game_loop():
     
     if type(curr_game).__name__ == 'PictGame':
         picture_game()
-        print(type(curr_game).__name__)
+        type(curr_game).__name__
         
     else:
         text_game()
