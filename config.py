@@ -13,6 +13,4 @@ game_names = {1:'dolphin', 5:'bonehenge', 3:'stupid'}
 game_types = {'dolphin':'picture', 'bonehenge':'text','stupid':'text'}
 small_prize = ('Bottlenose', 'Dwarf', 'Porpoise', 'Pyygmy', 'Spotted')
 big_prize  = ('Blue', 'Fin', 'Humpback', 'Minke', 'Right')
-dolphin_intro = ('Hello Welcome to ID the Dolphin',
-                 'We can identify individuals by their dorsal fin shape',
-                 'See if you can match one on the bottom row to the top picture')
+
