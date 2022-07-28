@@ -11,6 +11,8 @@ Files for games will follow this convention
 <game_name>_bkg.jpg = full screen background for game
 <game_name>_picture.csv = list of pairs of matching pictures
 <game_name>_qna.csv = Text games [Question, Correct, Wrong A, Wrong B]
+free_cash background = free_donate.jpg
+final_score = finalscore.jpg
 '''
 nt_path = 'graphics/'
 pi_path = '/home/pi/Dol_class/graphics/'

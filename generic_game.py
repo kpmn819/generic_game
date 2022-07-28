@@ -308,12 +308,6 @@ def init():
     global yay
     yay = SoundObject('Yay.mp3', .3)
     
-
-    global game_choice
-    game_choice = make_surface(gpath + 'game_choice.jpg')
-    global finalscore
-    finalscore = make_surface(gpath + 'finalscore.jpg')
-
     # these guys are shared by all games
     global blue_arrow
     blue_arrow = pygame.image.load(b_arro).convert_alpha()
@@ -542,7 +536,7 @@ def make_surface(file):
 #////////////////// START METHODS /////////////////////////
 
 
-def free_cash(background):
+def free_cash():
     ''' called by both games selects if it is a free game or
     if they put in some money sets global variables'''
     button_list = [1, 0, 0, 0, 0, 0, 1]
@@ -553,8 +547,9 @@ def free_cash(background):
     global free
     #global win
     global display
+    free_ch_bkg = make_surface(gpath + 'free_donate.jpg')
     bakgnd = ScreenObject((0,0))
-    ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
+    ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, free_ch_bkg)
     #create the object first can reuse object since blit stores it
     greeting = 'Press Free Play'
     greet = TextObject(greeting, (image_centerx, 200), 60, white )
@@ -591,12 +586,13 @@ def free_cash(background):
 
 
 #================ CHOOSE GAME ====================
-def choose_game(background):
+def choose_game():
     button_list = [0, 1, 0, 0, 0, 1, 0]
     light_proc(button_list)
+    choice_bkg = make_surface(gpath + 'game_choice.jpg')
     global curr_game
     bakgnd = ScreenObject((0,0))
-    ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
+    ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, choice_bkg)
     greeting = 'Please select a game to play'
     greet = TextObject(greeting, (image_centerx, 100), 80, white)
     TextObject.font_process(greet)
@@ -837,8 +833,9 @@ def final_score(score):
     SoundObject.play_sound(final_sound)
 
     # put up background and text
+    final_bkg = make_surface(gpath + 'finalscore.jpg')
     bkg = ScreenObject([0,0])
-    ScreenObject.blit_scr_obj(bkg, [0,0], finalscore)
+    ScreenObject.blit_scr_obj(bkg, [0,0], final_bkg)
     msg_y = 400
     message = 'Final Score'
     msg = TextObject(message, [image_centerx, msg_y], 80, white)
@@ -909,9 +906,9 @@ def game_loop():
     global curr_game
     
     # free_cash and curr_game calls include background images
-    free_cash(game_choice)
+    free_cash()
     # game must be created first
-    curr_game = choose_game(finalscore)
+    curr_game = choose_game()
     
     if type(curr_game).__name__ == 'PictGame':
         picture_game()
