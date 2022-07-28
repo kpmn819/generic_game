@@ -616,13 +616,16 @@ def choose_game(background):
     x = 430
     y = 600
     # first the left side
-    greeting = 'Photo-ID Challenge'
+    name = game_names[1]
+    file = name + '_dscr.csv'
+    dscr = get_file(file, 1)
+    greeting = dscr[0][0][0]
     greet = TextObject(greeting, (x, y), 70, white)
     TextObject.font_process(greet)
 
     # chop these up
     y = y + 90
-    greeting = 'See if you can match dolphin dorsal fins'
+    greeting = dscr[0][1][0]
     greet = TextObject(greeting, (image_centerx, 300), 80, white, 30)
     parsed_lines = TextObject.parse_string(greet)
     for item in parsed_lines:
@@ -632,11 +635,15 @@ def choose_game(background):
     # now the right side
     x = 1430
     y = 600
-    greeting = 'Bonehenge Tour Quiz'
+
+    name = game_names[5]
+    file = name + '_dscr.csv'
+    dscr = get_file(file, 1)
+    greeting = dscr[0][0][0]
     greet = TextObject(greeting, (x, y), 80, white)
     TextObject.font_process(greet)
     y = y + 90
-    greeting = 'Answer some questions about what you learned on your tour'
+    greeting = dscr[0][1][0]
     greet = TextObject(greeting, (x, y), 80, white, 30)
     parsed_lines = TextObject.parse_string(greet)
     for item in parsed_lines:
