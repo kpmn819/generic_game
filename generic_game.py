@@ -613,12 +613,13 @@ def choose_game(background):
     greeting = 'Please select a game to play'
     greet = TextObject(greeting, (image_centerx, 300), 80, white)
     TextObject.font_process(greet)
-    # first the left side
-    greeting = 'Photo-ID Challenge'
-    greet = TextObject(greeting, (430, 600), 70, white)
-    TextObject.font_process(greet)
     x = 430
     y = 600
+    # first the left side
+    greeting = 'Photo-ID Challenge'
+    greet = TextObject(greeting, (x, y), 70, white)
+    TextObject.font_process(greet)
+
     # chop these up
     y = y + 90
     greeting = 'See if you can match dolphin dorsal fins'
