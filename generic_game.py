@@ -549,7 +549,9 @@ def score_process(curr_game, right):
         pygame.display.flip()
         sleep(3)
     
-
+def make_surface(file):
+    surface = pygame.image.load(file).convert_alpha()
+    return surface
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #////////////////// START METHODS /////////////////////////
@@ -611,19 +613,17 @@ def choose_game(background):
     bakgnd = ScreenObject((0,0))
     ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, background)
     greeting = 'Please select a game to play'
-    greet = TextObject(greeting, (image_centerx, 300), 80, white)
+    greet = TextObject(greeting, (image_centerx, 100), 80, white)
     TextObject.font_process(greet)
-    x = 430
-    y = 600
     # first the left side
+    x = 430
+    y = 400
     name = game_names[1]
     file = name + '_dscr.csv'
     dscr = get_file(file, 1)
     greeting = dscr[0][0][0]
     greet = TextObject(greeting, (x, y), 70, white)
     TextObject.font_process(greet)
-
-    # chop these up
     y = y + 90
     greeting = dscr[0][1][0]
     greet = TextObject(greeting, (image_centerx, 300), 80, white, 30)
@@ -632,9 +632,10 @@ def choose_game(background):
         greet = TextObject(item, (x, y), 60, white)
         TextObject.font_process(greet)
         y = y + 70
+
     # now the right side
     x = 1430
-    y = 600
+    y = 400
 
     name = game_names[5]
     file = name + '_dscr.csv'
@@ -662,9 +663,11 @@ def choose_game(background):
     # make the game object and call it curr_game
     # the goal is to generalize the commands below to just two picture and text
     if type == 'picture':
-        curr_game = PictGame( name, bkg_surfaces[name], get_file(name + '_picture.csv', 2)[0], [0,0])
+        background = make_surface(gpath + name + '_bkg.jpg')
+        curr_game = PictGame( name, background, get_file(name + '_picture.csv', 2)[0], [0,0])
     if type == 'text':
-        curr_game = TextGame( name, bkg_surfaces[name], get_file(name + '_qna.csv', 4)[0], [0,0])
+        background = make_surface(gpath + name + '_bkg.jpg')
+        curr_game = TextGame( name, background, get_file(name + '_qna.csv', 4)[0], [0,0])
     if game_to_play == 3:
         curr_game = TextGame( name, g2_bkg, get_file('another_text.csv', 4)[0], [0,0])
     curr_game.free = free # True for free False for donation this is an add on

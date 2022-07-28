@@ -4,6 +4,14 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 blue = (150, 150, 255)
 green = (0, 255, 0)
+'''
+Files for games will follow this convention
+<game name>_dscr.csv = the game description Header and Body
+<game name>_intro.csv = the rules for a picture game
+<game_name>_bkg.jpg = full screen background for game
+<game_name>_picture.csv = list of pairs of matching pictures
+<game_name>_qna.csv = Text games [Question, Correct, Wrong A, Wrong B]
+'''
 nt_path = 'graphics/'
 pi_path = '/home/pi/Dol_class/graphics/'
 file_path = 'graphics/'
