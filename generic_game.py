@@ -296,18 +296,7 @@ def init():
     else:
         gpath = pi_path
 
-    # $$$$$$$$$$ THESE TWO WILL GO AWAY SOON $$$$$$$$$$
-    g1_open_pict = gpath + 'game_1.jpg'
-    g2_open_pict = gpath + 'game_2.jpg'
-    # New naming convention
-    dolphin_bkg_file = gpath + 'game_1.jpg'
-    bonehenge_bkg_file = gpath + 'game_2.jpg'
-    #free_donate_pict = gpath + 'free_donate.jpg' #(not used)
-    game_choice_pict = gpath + 'game_choice.jpg'
-    finalscore_pict = gpath + 'finalscore.jpg'
     # arrows
-    r_arro = gpath + 'red_arrow.png'
-    y_arro = gpath + 'yellow_arrow.png'
     b_arro = gpath + 'blue_arrow.png'
     # glows
     g_gl = gpath + 'g-glow.png'
@@ -319,15 +308,11 @@ def init():
     global yay
     yay = SoundObject('Yay.mp3', .3)
     
-    dolphin_bkg = pygame.image.load(dolphin_bkg_file).convert_alpha()
-    bonehenge_bkg = pygame.image.load(bonehenge_bkg_file).convert_alpha()
-    global bkg_surfaces
-    bkg_surfaces = {'dolphin':dolphin_bkg, 'bonehenge':bonehenge_bkg}
 
     global game_choice
-    game_choice = pygame.image.load(game_choice_pict).convert_alpha()
+    game_choice = make_surface(gpath + 'game_choice.jpg')
     global finalscore
-    finalscore = pygame.image.load(finalscore_pict).convert_alpha()
+    finalscore = make_surface(gpath + 'finalscore.jpg')
 
     # these guys are shared by all games
     global blue_arrow
