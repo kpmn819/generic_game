@@ -373,13 +373,19 @@ def btn_proc(btn_list):
     else:
         buttons = buttons_lights(btn_list, 0, 1)
         for i, button in enumerate(buttons):
+            # exit from anywhere if you hold down mouse and press button
+            event = pygame.event.poll()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print('got the mouse')
+                GPIO.cleanup()
+                sys.exit()
             if not button.in_stat:
                 # reset for the next time
                 button.in_stat = True
-
                 return i
+ 
+                
             
-
 
 
 def buttons_lights(light_list, lgt_set, btn_mon):
@@ -420,6 +426,11 @@ def buttons_lights(light_list, lgt_set, btn_mon):
         while loop == True:
             count += 1
             for i, button in enumerate(button_obj):
+                # special code to shutdown goes here
+                if GPIO.input(13) == GPIO.LOW and GPIO.input(5) == GPIO.LOW:
+                    #GPIO.cleanup()
+                    #os.system("sudo shutdown -h now")
+                    print('GOT SHUTDOWN COMMAND')
                 # only check the flagged ports
                 if light_list[i]:
                     # go check the physical port if it comes back False
@@ -583,7 +594,9 @@ def free_cash():
             free = False
         else:
             free = True
+ 
         break
+ 
 
         
 
@@ -883,7 +896,7 @@ def final_score(score):
         message = TextObject('Tell them your winner code is '+ '"'+ win_word+ '"', (image_centerx, msg_y),75,red)
         TextObject.font_process(message)
         pygame.display.flip()
-        fanfare = SoundObject('fanfare.mp3', 1)   
+        fanfare = SoundObject('fanfare.mp3', .5)   
         SoundObject.play_sound(fanfare)
         sleep(5)
 
