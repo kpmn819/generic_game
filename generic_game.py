@@ -249,6 +249,10 @@ def init():
     global image_centery
     image_centerx = 960
     image_centery = 540
+    global small_index
+    small_index = 0
+    global big_index
+    big_index = 0
     # button(in port, in stat, out port, out stat)
     if os.name == 'nt':
         pass
@@ -847,27 +851,22 @@ def final_score(score):
     sleep(4)
 
     # process winners
+    global small_index
+    global big_index
     if score[0] > 3 and not free:
-        if 'small_index' not in locals():
+        if small_index == len(small_prize) - 1:
             small_index = 0
             small_word = small_prize[small_index]
         else:
-            if small_index == len(small_prize):
-                small_index = 0
-                small_word = small_prize[small_index]
-            else:
-                small_index += 1
-                small_word = small_prize[small_index]
-        if 'big_index' not in locals():
+            small_index += 1
+            small_word = small_prize[small_index]
+        
+        if big_index == len(big_prize) - 1:
             big_index = 0
             big_word = big_prize[big_index]
         else:
-            if big_index == len(big_prize):
-                big_index = 0
-                big_word = big_prize[big_index]
-            else:
-                big_index += 1
-                big_word = big_prize[big_index]
+            big_index += 1
+            big_word = big_prize[big_index]
 
         if score[0] == 5:
             win_word = big_word
@@ -928,16 +927,17 @@ def main():
     
     try:
         init()
-        global curr_game
-    
-        try:
-            curr_game
-        except NameError:
-                print('no curr_game defined')
-        else:
-            del curr_game
+        while 1 == 1:
+            global curr_game
         
-        game_loop()
+            try:
+                curr_game
+            except NameError:
+                    print('no curr_game defined')
+            else:
+                del curr_game
+            
+            game_loop()
 
         
     except KeyboardInterrupt:
