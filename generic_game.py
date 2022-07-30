@@ -1,3 +1,5 @@
+#! /bin/sh
+
 # attempt to do a generic game format with classes
 
 # IMPORTS START --------------------------------------------------
@@ -14,6 +16,8 @@ from config import small_prize, big_prize
 #from random import sample
 from time import sleep, time
 import sys, pygame, os
+import timeout_decorator
+times_out = 30
 
 from pygame.locals import *
 if os.name == 'nt':
@@ -283,15 +287,15 @@ def init():
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.set_volume(1.0)
-    #os.environ['SDL_VIDEO_CENTERED'] = '1'
+    os.environ['SDL_VIDEO_CENTERED'] = '1'
     clock = pygame.time.Clock()
     screen_width = 1920
     screen_height = 1080
     bgColor = (0,0,0)
     size = (screen_width, screen_height)
     global display
-    #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-    display = pygame.display.set_mode((1920,1080))
+    display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+    #display = pygame.display.set_mode((1920,1080))
     # ^^^^^^^^^^^^ end pygame setup ^^^^^^^^^^^
 
     global gpath
@@ -331,6 +335,10 @@ def init():
 # /////////////////// START UTILITY METHODS ////////////////////////
 def get_file(list_file, col_count):
     # now a more generic reader that can take any number of columns
+    if os.name == 'nt':
+        pass
+    else:
+        list_file = '/home/pi/Dol_class/' + list_file
     global row_count
     global file_error
     try:
@@ -374,11 +382,7 @@ def btn_proc(btn_list):
         buttons = buttons_lights(btn_list, 0, 1)
         for i, button in enumerate(buttons):
             # exit from anywhere if you hold down mouse and press button
-            event = pygame.event.poll()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                print('got the mouse')
-                GPIO.cleanup()
-                sys.exit()
+
             if not button.in_stat:
                 # reset for the next time
                 button.in_stat = True
@@ -420,6 +424,7 @@ def buttons_lights(light_list, lgt_set, btn_mon):
                 button.out_stat = True
                 GPIO.output(button.out_port, True)
 
+
     if btn_mon:
         loop = True
         count = 0
@@ -428,9 +433,15 @@ def buttons_lights(light_list, lgt_set, btn_mon):
             for i, button in enumerate(button_obj):
                 # special code to shutdown goes here
                 if GPIO.input(13) == GPIO.LOW and GPIO.input(5) == GPIO.LOW:
-                    #GPIO.cleanup()
-                    #os.system("sudo shutdown -h now")
-                    print('GOT SHUTDOWN COMMAND')
+                    GPIO.cleanup()
+                    os.system("sudo shutdown -h now")
+                event = pygame.event.poll()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    print('got the mouse')
+                    GPIO.cleanup()
+                    sys.exit()
+                # ===== end shutdown code ======
+
                 # only check the flagged ports
                 if light_list[i]:
                     # go check the physical port if it comes back False
@@ -523,20 +534,20 @@ def intro_display(intro_line, y):
 
 
 def score_process(curr_game, right):
-    
+    f_size = 80
     if right:
         curr_game.score[0] += 1
         turn_resp = str(correct[randrange(len(correct))][0])
-        resp_msg = TextObject(turn_resp, (900, 700), 60, white)
+        resp_msg = TextObject(turn_resp, (900, 700), f_size, white)
     else:
         curr_game.score[1] += 1
         turn_resp = str(wrong[randrange(len(wrong))][0])
-        resp_msg = TextObject(turn_resp, (900, 700), 60, white)
+        resp_msg = TextObject(turn_resp, (900, 700), f_size, white)
     ScreenObject.blit_scr_obj(curr_game, [0,0], curr_game.background)
     # display response and score
     if curr_game.score[0] + curr_game.score[1] < 5:
         message = f'Your score is {curr_game.score[0]} Right {curr_game.score[1]} Wrong'
-        score_msg = TextObject(message,(900,500), 60, white)
+        score_msg = TextObject(message,(900,500), f_size, white)
         ScreenObject.blit_scr_obj(curr_game,(0,0),curr_game.background)
         TextObject.font_process(score_msg)
         TextObject.font_process(resp_msg)
@@ -603,6 +614,7 @@ def free_cash():
 
 
 #================ CHOOSE GAME ====================
+
 def choose_game():
     button_list = [0, 1, 0, 0, 0, 1, 0]
     light_proc(button_list)
@@ -914,13 +926,16 @@ def final_score(score):
 
 
 # GAME LOOP -------
+@timeout_decorator.timeout(times_out, use_signals=True)
 def game_loop():
     global curr_game
     
     # free_cash and curr_game calls include background images
     free_cash()
     # game must be created first
+    
     curr_game = choose_game()
+    
     
     if type(curr_game).__name__ == 'PictGame':
         picture_game()
@@ -948,9 +963,12 @@ def main():
             except NameError:
                     print('no curr_game defined')
             else:
+                print('previus game deleted')
                 del curr_game
-            
-            game_loop()
+            try:
+                game_loop()
+            except timeout_decorator.TimeoutError:
+                continue
 
         
     except KeyboardInterrupt:
