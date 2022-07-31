@@ -11,6 +11,10 @@ from random import randrange, shuffle, random, sample
 from config import white, black, green, red, blue
 from config import game_names, game_types, nt_path, pi_path
 from config import small_prize, big_prize
+import db_module
+use_db = True
+from datetime import datetime
+
 
 
 #from random import sample
@@ -935,7 +939,14 @@ def game_loop():
     # game must be created first
     
     curr_game = choose_game()
-    
+    if use_db:
+        # make an entry in the game field -1 score means game isn't finished
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y,%H,%M,%S")
+        db_module.db_start()
+        game_data = (curr_game.name, date_time, -1)
+        this_game = db_module.game_write(game_data)
+        db_module.db_close
     
     if type(curr_game).__name__ == 'PictGame':
         picture_game()
@@ -944,6 +955,14 @@ def game_loop():
     else:
         text_game()
     # we have gone and played the game so we can now finish
+    if use_db:
+        # add the ending score
+        db_score = (curr_game.score[0], this_game)
+        db_module.db_start()
+        db_module.game_over(db_score)
+        db_module.db_close
+
+
     final_score(curr_game.score)       
 
 #\\\\\\\\\\\\\\\\\\\\\\ END METHODS \\\\\\\\\\\\\\\\\\\\\\\\
