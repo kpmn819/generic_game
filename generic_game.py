@@ -17,7 +17,7 @@ from config import small_prize, big_prize
 from time import sleep, time
 import sys, pygame, os
 import timeout_decorator
-times_out = 30
+times_out = 300
 
 from pygame.locals import *
 if os.name == 'nt':
