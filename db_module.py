@@ -10,7 +10,10 @@ def db_start():
     global conn
     conn = sqlite3.connect('game_db.db')
     curs = conn.cursor()
-    
+
+def db_close():
+    curs.close()
+    conn.close()    
 
 def game_write(data):
     global curs
@@ -22,14 +25,24 @@ def game_write(data):
         this_game = curs.fetchone()
         #return this game's number for use in turns
         return this_game[0]
-    except sqlite3.OperationalError:
-        pass
+    except sqlite3.OperationalError as e:
+        print(e)
+
+def get_game():
+    try:
+        curs.execute("SELECT MAX(game_no) FROM game;")
+        this_game = curs.fetchone()
+        #return this game's number for use in turns
+        return this_game[0]
+    except sqlite3.OperationalError as e:
+        print(e)
+     
 def turn_write(data):
     try:
         curs.execute("INSERT INTO qna(game_no,q_number,question,answer,correct) VALUES(?,?,?,?,?);", data)
         conn.commit() 
-    except sqlite3.OperationalError:
-        pass
+    except sqlite3.OperationalError as e:
+        print(e)
 def game_over(final_score):
     try:
         curs.execute("UPDATE game SET score=? WHERE game_no=?;", final_score)
@@ -38,7 +51,7 @@ def game_over(final_score):
         print(e)
 
 
-db_start()
+'''db_start()
 now = datetime.now()
 date_time = now.strftime("%m/%d/%Y,%H,%M,%S")
 
@@ -53,8 +66,9 @@ turn_write(turn_stuff)
 #db_start()
 final_score = (555555, this_game)
 game_over(final_score)
+curs.close()
+conn.close() '''
 
-conn.close()   
 
 
 
