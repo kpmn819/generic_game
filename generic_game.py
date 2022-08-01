@@ -474,6 +474,10 @@ def key_press(key_list):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+    
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print('got the mouse')
+                sys.exit()
             # checking if keydown event happened or not
             if event.type == pygame.KEYDOWN:
                 
@@ -790,13 +794,11 @@ def text_game():
 
 #================== PICTURE GAME =================
 def picture_game():
-    button_list = [0, 1, 1, 1, 1, 1, 0]
-    light_proc(button_list)
-
     wrong_sound = SoundObject('Downer.mp3', .2)
     right_sound = SoundObject('Quick-win.mp3', .3)
     picture_intro(curr_game)
-
+    button_list = [0, 1, 1, 1, 1, 1, 0]
+    light_proc(button_list)
     # get 5 indexes for our turns
     turn_picks = sample(range( 0, len(curr_game.all_picts)), 5)
     for q in range(0,5):
@@ -852,7 +854,15 @@ def picture_game():
             c_index = resp - 1
             c_glow = ScreenObject([blit_index[c_index]- glo_offset, ay-glo_offset])
             ScreenObject.blit_scr_obj(c_glow, c_glow.location, red_glow)
+            sleep(.01)
             pygame.display.flip()
+        if use_db:
+                game_no = db_module.get_game()
+                _qpic = curr_game.qu_ans[turn_picks[q]][0]
+                print(_qpic)
+                turn_data = (game_no, q, _qpic, 'not recorded', resp_ans)
+                db_module.turn_write(turn_data)
+
         sleep(1.5)   
             
         score_process(curr_game, resp_ans)
