@@ -298,8 +298,8 @@ def init():
     bgColor = (0,0,0)
     size = (screen_width, screen_height)
     global display
-    display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-    #display = pygame.display.set_mode((1920,1080))
+    #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+    display = pygame.display.set_mode((1920,1080))
     # ^^^^^^^^^^^^ end pygame setup ^^^^^^^^^^^
 
     global gpath
@@ -700,12 +700,12 @@ def text_game():
     # get 5 (number of turns)
     turn_picks = sample(range( 0, len(curr_game.just_q)), 5)
     curr_game.score = [0,0]
-
+    turn_no = 0 #used by database
     # take turns
     # ||||||||| 5 TURNS ||||||||||||||||||||||||
     for index in turn_picks:
         display.blit(curr_game.background, (0,0))
-        
+        turn_no += 1
         turn_ans = (curr_game.just_a[index])
         # need to go through questions and randomize answers
         display_list = turn_ans[:] # make a copy
@@ -715,6 +715,7 @@ def text_game():
         qx_offset = 990
         qy_offset = 100
         question = TextObject(curr_game.just_q[index], [qx_offset,qy_offset], 80, white, 30)
+        q_db = question.text # whole question before parse
         q_parsed = TextObject.parse_string(question)
         for item in q_parsed:
             question.location = [qx_offset,qy_offset]
@@ -776,9 +777,10 @@ def text_game():
                 TextObject.font_process(highlight_ans)
                 ay_offset += 70
         if use_db:
+            # turn by turn data put in db
             game_no = db_module.get_game()
-            print('the game number is '+ str(game_no))
-            turn_data = (game_no, index, question.text, display_list[resp -1], resp_ans)
+            print(q_db)
+            turn_data = (game_no, turn_no, q_db, display_list[resp -1], resp_ans)
             db_module.turn_write(turn_data)
         pygame.display.flip()
         sleep(1)
