@@ -775,6 +775,11 @@ def text_game():
                 highlight_ans.text = item
                 TextObject.font_process(highlight_ans)
                 ay_offset += 70
+        if use_db:
+            game_no = db_module.get_game()
+            print('the game number is '+ str(game_no))
+            turn_data = (game_no, index, question.text, display_list[resp -1], resp_ans)
+            db_module.turn_write(turn_data)
         pygame.display.flip()
         sleep(1)
         score_process(curr_game, resp_ans)
