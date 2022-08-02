@@ -862,15 +862,9 @@ def picture_game():
                 # have to work backward to find the response
                 for location, item in enumerate(curr_game.all_picts):
                     if shuffle_answers[resp-1] == item[1]:
-                        print(location)
-
                         a_file = curr_game.qu_ans[location][1]
-                        print('answer= ' + str(a_file))
-                
-                print('question= '+ str(_qpic))
-                turn_data = (game_no, q, _qpic, a_file, resp_ans)
+                turn_data = (game_no, q + 1, _qpic, a_file, resp_ans)
                 db_module.turn_write(turn_data)
-                print(curr_game.qu_ans)
         sleep(1.5)   
             
         score_process(curr_game, resp_ans)
