@@ -814,7 +814,7 @@ def final_display(right_ans, wrong_ans):
             winner_code = small_prize[small_index]
             font_process(75,'Tell them your winner code is '+ '"' + winner_code + '"', red, image_centerx, msg_vert + 200)
         sleep(3) # let sound above play out
-        play_sound('fanfare.mp3', 1)
+        play_sound('fanfare.mp3', 1) 
         GPIO.output(portList3[1], True) # turn on the bell
         sleep(.5)
         GPIO.output(portList3[1], False) # turn it off

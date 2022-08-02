@@ -937,7 +937,7 @@ def final_score(score):
 
 
 # GAME LOOP -------
-@timeout_decorator.timeout(times_out, use_signals=True)
+#@timeout_decorator.timeout(times_out, use_signals=True)
 def game_loop():
     global curr_game
     
