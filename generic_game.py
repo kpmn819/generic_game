@@ -565,6 +565,30 @@ def score_process(curr_game, right):
 def make_surface(file):
     surface = pygame.image.load(file).convert_alpha()
     return surface
+
+def blit_formatted(file):
+    global image_centerx
+    # reads text formatted as Text, Size, X Postion or 'center', Y Position, Color
+    lines = get_file('free_cash.csv',5)[0]
+    for index, line in enumerate(lines):
+        print(line[0])
+        line[2].strip
+        line[3].strip
+        line[4].strip
+        if line[2] == 'center':
+            line[2] = image_centerx
+        if line[4] == 'white':
+            line[4] = white
+        elif line[4] == 'blue':
+            line[4] = blue
+        elif line[4] == 'red':
+            line[4] = red
+        else:
+            line[4] = white
+        greeting = line[0]
+        greet = TextObject(greeting, ( int(line[2]), int(line[3])), int(line[1]), line[4] )
+        TextObject.font_process(greet)
+
 # \\\\\\\\\\\\\\\\\\\ END UTILITY METHODS \\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #////////////////// START METHODS /////////////////////////
@@ -585,24 +609,8 @@ def free_cash():
     bakgnd = ScreenObject((0,0))
     ScreenObject.blit_scr_obj(bakgnd, bakgnd.location, free_ch_bkg)
     #create the object first can reuse object since blit stores it
-    greeting = 'Press Free Play'
-    greet = TextObject(greeting, (image_centerx, 200), 60, white )
-    TextObject.font_process(greet)
-    greeting = 'or'
-    greet = TextObject('or',(image_centerx, 280), 60, white)
-    TextObject.font_process(greet)
-    greeting = 'Make a Donation and get a chance to win a Bonehenge Prize'
-    greet = TextObject(greeting, (image_centerx, 360), 60, white )
-    TextObject.font_process(greet)
-    greeting = 'Prizes are awarded for 5 of 5 or 4 of 5 correct answers'
-    greet = TextObject(greeting, (image_centerx,800), 30, white )
-    TextObject.font_process(greet)
-    greeting = 'If you win you will see your winner code word'
-    greet = TextObject(greeting, (image_centerx,850), 30, white )
-    TextObject.font_process(greet)
+    blit_formatted('free_cash.csv')
     pygame.display.flip()
-    
-    
     # Select if this is a paid or free play
     while True:
         sleep(.05)
