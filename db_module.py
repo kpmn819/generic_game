@@ -23,7 +23,7 @@ def game_write(data):
     try:
         curs.execute("INSERT INTO game_code_game(name,dtime,score) VALUES(?,?,?);", data)
         conn.commit()
-        curs.execute("SELECT MAX(game_no) FROM game;")
+        curs.execute("SELECT MAX(id) FROM game_code_game;")
         this_game = curs.fetchone()
         #return this game's number for use in turns
         return this_game[0]
@@ -47,7 +47,7 @@ def turn_write(data):
         print(e)
 def game_over(final_score):
     try:
-        curs.execute("UPDATE game_code_game SET score=? WHERE game_no=?;", final_score)
+        curs.execute("UPDATE game_code_game SET score=? WHERE id=?;", final_score)
         conn.commit() 
     except sqlite3.OperationalError as e:
         print(e)
