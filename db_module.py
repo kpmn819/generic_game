@@ -8,7 +8,9 @@ def db_start():
     
     global curs
     global conn
-    conn = sqlite3.connect('game_db.db')
+    #conn = sqlite3.connect('game_db.db')
+    conn = sqlite3.connect('/home/pi/game_web/game/db.sqlite3')
+
     curs = conn.cursor()
 
 def db_close():
@@ -19,7 +21,7 @@ def game_write(data):
     global curs
     global conn
     try:
-        curs.execute("INSERT INTO game(name,dtime,score) VALUES(?,?,?);", data)
+        curs.execute("INSERT INTO game_code_game(name,dtime,score) VALUES(?,?,?);", data)
         conn.commit()
         curs.execute("SELECT MAX(game_no) FROM game;")
         this_game = curs.fetchone()
@@ -30,7 +32,7 @@ def game_write(data):
 
 def get_game():
     try:
-        curs.execute("SELECT MAX(game_no) FROM game;")
+        curs.execute("SELECT MAX(id) FROM game_code_game;")
         this_game = curs.fetchone()
         #return this game's number for use in turns
         return this_game[0]
@@ -39,20 +41,20 @@ def get_game():
      
 def turn_write(data):
     try:
-        curs.execute("INSERT INTO qna(game_no,q_number,question,answer,correct) VALUES(?,?,?,?,?);", data)
+        curs.execute("INSERT INTO game_code_qna(game_id,q_number,question,answer,correct) VALUES(?,?,?,?,?);", data)
         conn.commit() 
     except sqlite3.OperationalError as e:
         print(e)
 def game_over(final_score):
     try:
-        curs.execute("UPDATE game SET score=? WHERE game_no=?;", final_score)
+        curs.execute("UPDATE game_code_game SET score=? WHERE game_no=?;", final_score)
         conn.commit() 
     except sqlite3.OperationalError as e:
         print(e)
 
 
-'''db_start()
-now = datetime.now()
+# db_start()
+'''now = datetime.now()
 date_time = now.strftime("%m/%d/%Y,%H,%M,%S")
 
 game_stuff =('jjjjjj', date_time, 0)
