@@ -568,10 +568,9 @@ def make_surface(file):
 
 def blit_formatted(file):
     global image_centerx
-    # reads text formatted as Text, Size, X Postion or 'center', Y Position, Color
+    # reads text formatted as [[Text, Size, X Postion or 'center', Y Position, Color]]
     lines = get_file('free_cash.csv',5)[0]
     for index, line in enumerate(lines):
-        print(line[0])
         line[2].strip
         line[3].strip
         line[4].strip
@@ -791,7 +790,6 @@ def text_game():
         if use_db:
             # turn by turn data put in db
             game_no = db_module.get_game()
-            print(q_db)
             turn_data = (game_no, turn_no, q_db, display_list[resp -1], resp_ans)
             db_module.turn_write(turn_data)
         pygame.display.flip()
