@@ -21,7 +21,7 @@ def game_write(data):
     global curs
     global conn
     try:
-        curs.execute("INSERT INTO game_code_game(name,dtime,score) VALUES(?,?,?);", data)
+        curs.execute("INSERT INTO game_code_game(name,dtime,score,free) VALUES(?,?,?,?);", data)
         conn.commit()
         curs.execute("SELECT MAX(id) FROM game_code_game;")
         this_game = curs.fetchone()

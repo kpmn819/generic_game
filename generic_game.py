@@ -969,7 +969,7 @@ def game_loop():
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y,%H,%M,%S")
         db_module.db_start()
-        game_data = (curr_game.name, date_time, -1)
+        game_data = (curr_game.name, date_time, -1, free)
         this_game = db_module.game_write(game_data)
         db_module.db_close
     
