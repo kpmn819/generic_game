@@ -3,13 +3,16 @@
 
 import sqlite3
 from datetime import datetime
+from config import pi_db
 
 def db_start():
     
     global curs
     global conn
     #conn = sqlite3.connect('game_db.db')
-    conn = sqlite3.connect('/home/pi/game_web/game/db.sqlite3')
+    #conn = sqlite3.connect('/home/pi/game_web/game/db.sqlite3')
+    conn = sqlite3.connect(pi_db)
+
 
     curs = conn.cursor()
 
