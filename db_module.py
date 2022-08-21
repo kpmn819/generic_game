@@ -2,16 +2,21 @@
 
 
 import sqlite3
+import os
 from datetime import datetime
-from config import pi_db
+from config import pi_db, nt_db
 
 def db_start():
-    
+    if os.name == 'nt':
+        db_path = nt_db
+    else:
+        db_path = pi_db
+
     global curs
     global conn
     #conn = sqlite3.connect('game_db.db')
     #conn = sqlite3.connect('/home/pi/game_web/game/db.sqlite3')
-    conn = sqlite3.connect(pi_db)
+    conn = sqlite3.connect(db_path)
 
 
     curs = conn.cursor()

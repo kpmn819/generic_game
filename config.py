@@ -18,6 +18,7 @@ nt_path = 'graphics/'
 pi_path = '/home/pi/Dol_class/graphics/'
 file_path = 'graphics/'
 pi_db = '/home/pi/game_web/game/db.sqlite3'
+nt_db = 'db.sqlite3'
 some_file = file_path + 'somefile'
 # used by choose_game to set up questions, answers and backgrounds
 # dictionary button#: name
