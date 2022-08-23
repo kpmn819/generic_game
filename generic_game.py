@@ -193,7 +193,7 @@ class GraphicObject(ScreenObject):
         self.surface = pygame.image.load(file_name).convert_alpha()
 
 class TextObject(ScreenObject):
-    def __init__(self, text, location, size, color, width=None, font=None):
+    def __init__(self, text, location, size, color, width=None, font='FreeSans'):
         self.text = text
         self.font = font
         self.size = size
@@ -217,7 +217,7 @@ class TextObject(ScreenObject):
         black = (0,0,0)
         d_shadow = 3
         # create a font object from a system font
-        font = pygame.font.SysFont('FreeSans', self.size, True, False)
+        font = pygame.font.SysFont(self.font, self.size, True, False)
         # render font on a new surface font.render(text, antialias, bkgnd = none)
         render_message = font.render(self.text, True, self.color)
         # render drop shadow in black
