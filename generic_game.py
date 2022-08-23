@@ -104,7 +104,7 @@ class PictGame():
         
             
 # !!!!!!!!!!!!
-class Port():
+'''class Port():
     def __init__(self, p_num, input, state= None):
         self.p_num = p_num
         self.input = input
@@ -150,7 +150,7 @@ class Port():
         if config == 'five_on':
             pass
         if config == 'three_on':
-            pass
+            pass'''
 # ----------- Buttons ---------------
 class Button():
     def __init__(self, in_port, in_stat, out_port, out_stat):
@@ -210,8 +210,6 @@ class TextObject(ScreenObject):
     #----------- font process
     def font_process(self):
         global display
-        #x = location[0]
-        #y = location[1]
         x = self.location[0]
         y = self.location[1]
         # attempt to combine all font operations into one call that
@@ -230,7 +228,6 @@ class TextObject(ScreenObject):
         # create a rectangular object for the text surface object
         render_msg_rect = render_message.get_rect()
         # center in x, use y from call
-        #render_msg_rect.center = (image_centerx, y) # (x,y) x = screen center
         render_msg_rect.center = self.location # (x,y) x = screen center
         # blit drop shadow then text to image
         if d_shadow:
@@ -298,7 +295,6 @@ def init():
     bgColor = (0,0,0)
     size = (screen_width, screen_height)
     global display
-    #display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     display = pygame.display.set_mode((1920,1080))
     # ^^^^^^^^^^^^ end pygame setup ^^^^^^^^^^^
 
@@ -602,7 +598,7 @@ def free_cash():
 
     # display rules and wait for input
     global free
-    #global win
+    
     global display
     free_ch_bkg = make_surface(gpath + 'free_donate.jpg')
     bakgnd = ScreenObject((0,0))
@@ -613,7 +609,6 @@ def free_cash():
     # Select if this is a paid or free play
     while True:
         sleep(.05)
-        #selection = key_press(button_list)
         selection = btn_proc(button_list)
         if selection == 0:
             SoundObject.play_sound(yay)
@@ -679,10 +674,8 @@ def choose_game():
     place_arrows('1and5')
     pygame.display.flip()
 
-    #game_to_play = key_press(button_list)
     light_proc(button_list)
     game_to_play = btn_proc(button_list)
-    #name = game_names[game_to_play]
     name = game_names[game_to_play]
     type = game_types[name]
     # make the game object and call it curr_game
