@@ -20,6 +20,7 @@ from datetime import datetime
 #from random import sample
 from time import sleep, time
 import sys, pygame, os
+import multiprocessing
 import timeout_decorator
 times_out = 300
 
@@ -270,6 +271,10 @@ def init():
         sleep(1)
         light_list = [0] * 7
         buttons_lights(light_list, 1, 0)
+        # Start the web server if on the pi
+        process = multiprocessing.Process(target = task)
+        process.start()
+
 
 
     # make some arrow objects
@@ -333,6 +338,14 @@ def init():
 #\\\\\\\\\\\\\\\\\\\ INITIALIZE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 # /////////////////// START UTILITY METHODS ////////////////////////
+def task():
+    # Used to start web server
+    try:
+        print('Attempting to start server')
+        os.system('/home/pi/game_web/game/manage.py runserver')
+    except:
+        print('could not start server')
+
 def get_file(list_file, col_count):
     # now a more generic reader that can take any number of columns
     if os.name == 'nt':
@@ -434,11 +447,15 @@ def buttons_lights(light_list, lgt_set, btn_mon):
                 # special code to shutdown goes here
                 if GPIO.input(13) == GPIO.LOW and GPIO.input(5) == GPIO.LOW:
                     GPIO.cleanup()
+                    # Shutdown the web server
+                    os.system('sudo fuser -k 8000/tcp')
                     os.system("sudo shutdown -h now")
                 event = pygame.event.poll()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     print('got the mouse')
                     GPIO.cleanup()
+                    # Shutdown the web server
+                    os.system('sudo fuser -k 8000/tcp')
                     sys.exit()
                 # ===== end shutdown code ======
 
@@ -1011,8 +1028,9 @@ def main():
     except KeyboardInterrupt:
         #cleanup at end of program
         print('   Shutdown')
-        #
-        # GPIO.cleanup()
+        if os.name != 'nt':
+            GPIO.cleanup()
+            os.system('sudo fuser -k 8000/tcp')
 
 if __name__ == '__main__':
     main()
