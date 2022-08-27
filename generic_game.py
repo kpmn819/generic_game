@@ -104,54 +104,7 @@ class PictGame():
         # we now have a list of pairs of surfaces ready to be blitted
         
             
-# !!!!!!!!!!!!
-'''class Port():
-    def __init__(self, p_num, input, state= None):
-        self.p_num = p_num
-        self.input = input
-  
-        # need to setup gpio port here
-        if self.input:
-            if os.name != 'nt':
-                GPIO.setup(p_num, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-            else:
-                pass
-        else:
-            if os.name != 'nt':
-                GPIO.setup(p_num, GPIO.OUT)
-            else:
-                pass
-    def change_state(self):
-        if not self.input:
-            if self.state:
-                self.state = False
-            else:
-                self.state = True
-        else:
-            pass
-    def out_high(self):
-        if not self.input:
-            self.state = True
-        else:
-            pass
-    def out_low(self):
-        if not self.input:
-            self.state = False
-        else:
-            pass
-    def read_state(self):
-        if self.input:
-            # read the port
-            return self.state
-        else:
-            pass
-    def change_config(config):
-        if config == 'free_and_pay':
-            pass
-        if config == 'five_on':
-            pass
-        if config == 'three_on':
-            pass'''
+
 # ----------- Buttons ---------------
 class Button():
     def __init__(self, in_port, in_stat, out_port, out_stat):
