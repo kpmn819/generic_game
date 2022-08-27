@@ -10,7 +10,7 @@ from random import randrange, shuffle, random, sample
 # pull stuff from config file
 from config import white, black, green, red, blue
 from config import game_names, game_types, nt_path, pi_path
-from config import small_prize, big_prize
+from config import small_prize, big_prize, web_server, lists_path
 import db_module
 use_db = True
 from datetime import datetime
@@ -342,7 +342,7 @@ def task():
     # Used to start web server
     try:
         print('Attempting to start server')
-        os.system('/home/pi/game_web/game/manage.py runserver')
+        os.system(web_server)
     except:
         print('could not start server')
 
@@ -351,7 +351,7 @@ def get_file(list_file, col_count):
     if os.name == 'nt':
         pass
     else:
-        list_file = '/home/pi/Dol_class/' + list_file
+        list_file = lists_path + list_file
     global row_count
     global file_error
     try:

@@ -19,6 +19,10 @@ pi_path = '/home/pi/Dol_class/graphics/'
 file_path = 'graphics/'
 pi_db = '/home/pi/game_web/game/db.sqlite3'
 nt_db = 'db.sqlite3'
+
+lists_path = '/home/pi/Dol_class/'
+# Path and run command for server
+web_server = '/home/pi/game_web/game/manage.py runserver'
 some_file = file_path + 'somefile'
 # used by choose_game to set up questions, answers and backgrounds
 # dictionary button#: name
