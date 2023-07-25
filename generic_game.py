@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # attempt to do a generic game format with classes
-
+# 
 # IMPORTS START --------------------------------------------------
 # makes extensive use of pygame to blit the screen
 
