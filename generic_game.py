@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # attempt to do a generic game format with classes
-# 
+
 # IMPORTS START --------------------------------------------------
 # makes extensive use of pygame to blit the screen
 
@@ -21,8 +21,8 @@ from datetime import datetime
 from time import sleep, time
 import sys, pygame, os
 import multiprocessing
-import timeout_decorator
-times_out = 300
+#import timeout_decorator
+
 
 from pygame.locals import *
 if os.name == 'nt':
@@ -40,7 +40,8 @@ import textwrap
 ''' this decorater wraps the major functions and methods
 to allow resetting the game if they walk away'''
 import timeout_decorator
-
+times_out = 30
+MASTER_TIMEOUT = 300
 
 # /////////////////  VARIABLES AND CONSTANTS ///////////////////////////
 
@@ -95,8 +96,8 @@ class PictGame():
             temp_surface = []
             temp.append(self.qu_ans[count][0])
             temp.append(self.qu_ans[count][1])
-            temp_surface.append(pygame.image.load('graphics/'+ self.qu_ans[count][0]).convert_alpha())
-            temp_surface.append(pygame.image.load('graphics/'+ self.qu_ans[count][1]).convert_alpha())
+            temp_surface.append(pygame.image.load('/home/pi/Dol_class/graphics/'+ self.qu_ans[count][0]).convert_alpha())
+            temp_surface.append(pygame.image.load('/home/pi/Dol_class/graphics/'+ self.qu_ans[count][1]).convert_alpha())
                 
             count += 1
             self.all_picts.append(temp_surface)
@@ -253,7 +254,9 @@ def init():
     bgColor = (0,0,0)
     size = (screen_width, screen_height)
     global display
-    display = pygame.display.set_mode((1920,1080))
+    #display = pygame.display.set_mode((1920,1080))
+    display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+    pygame.mouse.set_visible(0)
     # ^^^^^^^^^^^^ end pygame setup ^^^^^^^^^^^
 
     global gpath
@@ -383,12 +386,12 @@ def buttons_lights(light_list, lgt_set, btn_mon):
         for i, button in enumerate(button_obj):
             if light_list[i]:
                 # set the port False = low light on
-                GPIO.output(button.out_port, False)
-                # call Button to set port gpio
-                button.out_stat = False
-            else:
-                button.out_stat = True
                 GPIO.output(button.out_port, True)
+                # call Button to set port gpio
+                button.out_stat = True
+            else:
+                button.out_stat = False
+                GPIO.output(button.out_port, False)
 
 
     if btn_mon:
@@ -581,10 +584,11 @@ def free_cash():
         sleep(.05)
         selection = btn_proc(button_list)
         if selection == 0:
+            
+            free = True
+        else:
             SoundObject.play_sound(yay)
             free = False
-        else:
-            free = True
  
         break
  
@@ -919,6 +923,7 @@ def final_score(score):
 
 # GAME LOOP -------
 #@timeout_decorator.timeout(times_out, use_signals=True)
+@timeout_decorator.timeout(MASTER_TIMEOUT,use_signals=True)
 def game_loop():
     global curr_game
     
