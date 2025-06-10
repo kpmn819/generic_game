@@ -402,10 +402,12 @@ def buttons_lights(light_list, lgt_set, btn_mon):
             for i, button in enumerate(button_obj):
                 # special code to shutdown goes here
                 if GPIO.input(13) == GPIO.LOW and GPIO.input(5) == GPIO.LOW:
-                    GPIO.cleanup()
-                    # Shutdown the web server
-                    os.system('sudo fuser -k 8000/tcp')
-                    os.system("sudo shutdown -h now")
+                    sleep(3) # Still pressed?
+                    if GPIO.input(13) == GPIO.LOW and GPIO.input(5) == GPIO.LOW:
+                        GPIO.cleanup()
+                        # Shutdown the web server
+                        os.system('sudo fuser -k 8000/tcp')
+                        os.system("sudo shutdown -h now")
                 event = pygame.event.poll()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     print('got the mouse')
